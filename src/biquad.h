@@ -32,7 +32,7 @@ public:
 	};
 
 	Biquad(int type, fpoint sampleRate);
-	~Biquad();
+	virtual ~Biquad(){};
 
 	void recalculateCoeffs();
 	void setFilterType(int filterType);

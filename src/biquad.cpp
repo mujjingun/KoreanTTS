@@ -191,8 +191,3 @@ fpoint Biquad::process(fpoint v, int side)
 	}
 	return output;
 }
-
-Biquad::~Biquad()
-{
-}
-
