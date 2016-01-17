@@ -1,6 +1,7 @@
 #include <cmath>
 #include "formants.h"
 
+/*
 Vowel* formantsMale[] = {
     // 0. ㅏ
     new Monophthong(738, 1372, 2573),
@@ -45,55 +46,56 @@ Vowel* formantsMale[] = {
     // 20. ㅣ
     new Monophthong(342, 2219, 3047)
 };
+*/
 
-Vowel* formants[] = {
+Vowel vowel_formants[] = {
     // 0. ㅏ
-    new Monophthong(986, 1794, 2957),
+    {986, 1794, 2957, 986, 1794, 2957},
     // 1. ㅐ
-    new Monophthong(677, 2285, 3063),
+    {677, 2285, 3063, 677, 2285, 3063},
     // 2. ㅑ
-    new Diphthong(20, 0),
+    {344, 2814, 3471, 986, 1794, 2957},
     // 3. ㅒ
-    new Diphthong(20, 1),
+    {344, 2814, 3471, 677, 2285, 3063},
     // 4. ㅓ
-    new Monophthong(765, 1371, 3009),
+    {765, 1371, 3009, 765, 1371, 3009},
     // 5. ㅔ
-    new Monophthong(650, 2377, 3068),
+    {650, 2377, 3068, 650, 2377, 3068},
     // 6. ㅕ
-    new Diphthong(20, 4),
+    {344, 2814, 3471, 765, 1371, 3009},
     // 7. ㅖ
-    new Diphthong(20, 5),
+    {344, 2814, 3471, 650, 2377, 3068},
     // 8. ㅗ
-    new Monophthong(499, 1029, 3068),
+    {499, 1029, 3068, 499, 1029, 3068},
     // 9. ㅘ
-    new Diphthong(8, 0),
+    {499, 1029, 3068, 986, 1794, 2957},
     // 10. ㅙ
-    new Diphthong(8, 1),
-    // 11. ㅚ
-    new Diphthong(13, 5),
+    {499, 1029, 3068, 677, 2285, 3063},
+    // 11. ㅚ (=ㅞ)
+    {422, 1021, 3024, 650, 2377, 3068},
     // 12. ㅛ
-    new Diphthong(20, 8),
+    {344, 2814, 3471, 499, 1029, 3068},
     // 13. ㅜ
-    new Monophthong(422, 1021, 3024),
+    {422, 1021, 3024, 422, 1021, 3024},
     // 14. ㅝ
-    new Diphthong(13, 4),
+    {422, 1021, 3024, 765, 1371, 3009},
     // 15. ㅞ
-    new Diphthong(13, 5),
+    {422, 1021, 3024, 650, 2377, 3068},
     // 16. ㅟ
-    new Diphthong(13, 20),
+    {422, 1021, 3024, 344, 2814, 3471},
     // 17. ㅠ
-    new Diphthong(20, 13),
+    {344, 2814, 3471, 422, 1021, 3024},
     // 18. ㅡ
-    new Monophthong(447, 1703, 2997),
+    {447, 1703, 2997, 447, 1703, 2997},
     // 19. ㅢ
-    new Diphthong(18, 20),
+    {447, 1703, 2997, 344, 2814, 3471},
     // 20. ㅣ
-    new Monophthong(344, 2814, 3471)
+    {344, 2814, 3471, 344, 2814, 3471}
 };
 
-Vowel* get_formant(int i)
+Vowel get_vowel_formants(int i)
 {
-    return formants[i];
+    return vowel_formants[i];
 }
 
 fpoint clamp(fpoint s, fpoint e, fpoint x)

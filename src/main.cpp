@@ -1,13 +1,12 @@
 #include <iostream>
 #include <ctime>
+#include <string>
 #include <vector>
 
 #include "main.h"
 #include "soundio.h"
 #include "synthesizer.h"
 #include "encoding.h"
-
-#define INPUT_SIZE 1000
 
 int main(int argc, char *argv[])
 {
@@ -31,11 +30,11 @@ int main(int argc, char *argv[])
         out.clear();
 
         std::cout << "input: ";
-        wchar_t in_uni[INPUT_SIZE];
-        int len_uni = console_input(in_uni, INPUT_SIZE);
+        std::wstring in_uni;
+        in_uni = console_input();
 
         std::vector<int> in;
-        in = decompose(in_uni, len_uni);
+        in = decompose(in_uni);
 
         if(in.empty()) break;
 

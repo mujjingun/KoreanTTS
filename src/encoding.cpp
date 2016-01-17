@@ -1,14 +1,34 @@
-#include <windows.h>
-#include <cstdio>
 #include "encoding.h"
 
-int console_input ( wchar_t * str, const int size )
+#define READFROMCONSOLE
+
+#ifdef READFROMCONSOLE
+
+#include <iostream>
+#include <windows.h>
+
+std::wstring console_input()
 {
-    fflush(stdin);
-    char input[size * 3];
-    fgets(input, size * 3, stdin);
-    return MultiByteToWideChar(CP_ACP, MB_COMPOSITE, input, strlen(input), str, size);
+    std::string input;
+    std::cin >> input;
+    wchar_t tmp[1000] = {0};
+    int len = MultiByteToWideChar(CP_ACP, MB_COMPOSITE, input.c_str(), input.length(), tmp, 1000);
+    tmp[len] = 0;
+    std::wstring str(tmp);
+    return str;
 }
+
+#else
+
+#include <codecvt>
+int console_input ( std::wstring & str )
+{
+    std::ifstream file("Read.txt");
+    std::string str;
+    std::wstring_convert<std::codecvt_utf8<char16_t>> convert;
+}
+
+#endif
 
 #define FIRST_HANGUL_UNICODE 0xAC00
 #define LAST_HANGUL_UNICODE 0xD7A3
@@ -16,11 +36,10 @@ int console_input ( wchar_t * str, const int size )
 #define NUM_JUNGSUNGS 21
 #define NUM_JONGSUNGS 28
 
-std::vector<int> decompose( wchar_t * str, int len )
+std::vector<int> decompose( std::wstring const & str )
 {
     std::vector<int> out;
-    int c = 0;
-    for(int i = 0; i < len; i++)
+    for(size_t i = 0; i < str.length(); i++)
     {
         int code = str[i] - FIRST_HANGUL_UNICODE;
 

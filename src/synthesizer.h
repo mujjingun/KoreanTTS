@@ -18,13 +18,13 @@ class Synthesizer
 
     protected:
         int update_params();
+        fpoint gen_signal(fpoint freq, fpoint voice_level, fpoint noise_level);
 
     private:
         int sample_idx;
         int vowel_idx;
-        bool voice;
+        bool is_vowel;
         bool finished;
-        char vowel_type;
         std::vector<int> phonemes;
 
         fpoint f1, f2, f3;

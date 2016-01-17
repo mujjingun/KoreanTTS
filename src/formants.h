@@ -3,37 +3,19 @@
 
 #include "main.h"
 
-class Vowel
+struct Vowel
 {
-public:
-    char type;
-
-    Vowel(char type): type(type) {}
-    virtual ~Vowel() {}
-
+    fpoint s1, s2, s3;
+    fpoint e1, e2, e3;
 };
 
-class Monophthong : public Vowel
+struct Consonant
 {
-public:
     fpoint f1, f2, f3;
-
-    Monophthong(fpoint f1, fpoint f2, fpoint f3): Vowel('m'), f1(f1), f2(f2), f3(f3) {}
-    virtual ~Monophthong() {}
-
+    fpoint vot;
 };
 
-class Diphthong : public Vowel
-{
-public:
-    int a, b;
-
-    Diphthong(int a, int b): Vowel('d'), a(a), b(b) {}
-    virtual ~Diphthong() {}
-
-};
-
-Vowel* get_formant(int i);
+Vowel get_vowel_formants(int i);
 fpoint linear(fpoint s, fpoint e, fpoint x, fpoint sx, fpoint ex);
 fpoint clamp(fpoint s, fpoint e, fpoint x);
 

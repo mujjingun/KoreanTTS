@@ -1,10 +1,12 @@
 #ifndef ENCODING_H_INCLUDED
 #define ENCODING_H_INCLUDED
 
+#include "main.h"
 #include <vector>
+#include <string>
 
-int console_input ( wchar_t * str, int size );
+std::wstring console_input();
 
-std::vector<int> decompose( wchar_t * , int );
+std::vector<int> decompose( std::wstring const & str );
 
 #endif // ENCODING_H_INCLUDED

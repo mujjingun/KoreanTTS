@@ -81,8 +81,6 @@ void Biquad::recalculateCoeffs()
 		a1 = -2 * cosw0;
 		a2 = 1 - alpha;
 		break;
-    case BAND_STOP:
-        break;
 	case NOTCH:
 		b0 = 1;
 		b1 = -2 * cosw0;
