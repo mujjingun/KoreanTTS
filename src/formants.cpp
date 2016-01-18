@@ -48,7 +48,7 @@ Vowel* formantsMale[] = {
 };
 */
 
-Vowel vowel_formants[] = {
+const Vowel vowel_formants[] = {
     // 0. ㅏ
     {986, 1794, 2957, 986, 1794, 2957},
     // 1. ㅐ
@@ -82,7 +82,7 @@ Vowel vowel_formants[] = {
     // 15. ㅞ
     {422, 1021, 3024, 650, 2377, 3068},
     // 16. ㅟ
-    {422, 1021, 3024, 344, 2814, 3471},
+    {333, 1192, 3024, 344, 2814, 3471},
     // 17. ㅠ
     {344, 2814, 3471, 422, 1021, 3024},
     // 18. ㅡ
@@ -93,9 +93,55 @@ Vowel vowel_formants[] = {
     {344, 2814, 3471, 344, 2814, 3471}
 };
 
-Vowel get_vowel_formants(int i)
+const Consonant consonant_formants[] = {
+    // 0. ㄱ
+    {20, 3500, 0.053},
+    // 1. ㄲ
+    {20, 3500, 0.024},
+    // 2. ㄴ
+    {},
+    // 3. ㄷ
+    {20, 1800, 0.039},
+    // 4. ㄸ
+    {20, 1800, 0.016},
+    // 5. ㄹ
+    {},
+    // 6. ㅁ
+    {},
+    // 7. ㅂ
+    {20, 800, 0.035},
+    // 8. ㅃ
+    {20, 800, 0.012},
+    // 9. ㅅ
+    {},
+    // 10. ㅆ
+    {},
+    // 11. ㅇ
+    {},
+    // 12. ㅈ
+    {},
+    // 13. ㅉ
+    {},
+    // 14. ㅊ
+    {},
+    // 15. ㅋ
+    {20, 3500, 0.095},
+    // 16. ㅌ
+    {20, 1800, 0.075},
+    // 17. ㅍ
+    {20, 800, 0.075},
+    // 18. ㅎ
+    {}
+};
+
+Vowel const & get_vowel_formants(int i)
 {
     return vowel_formants[i];
+}
+
+Consonant const & get_consonant_formants(int i)
+{
+    return consonant_formants[i];
 }
 
 fpoint clamp(fpoint s, fpoint e, fpoint x)

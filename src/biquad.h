@@ -41,6 +41,7 @@ public:
 	void setS(fpoint s);
 	void setF0(fpoint freq);
 	void setDbGain(fpoint g);
+	void reset();
 
 	/// process one sample
 	fpoint process(fpoint v, int side);

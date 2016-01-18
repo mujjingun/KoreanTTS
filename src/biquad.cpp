@@ -28,6 +28,14 @@ Biquad::Biquad(int filterType, fpoint rate)
 	S = 1;
 }
 
+void Biquad::reset()
+{
+    x_1_l = x_2_l = 0;
+	y_1_l = y_2_l = 0;
+	x_1_r = x_2_r = 0;
+	y_1_r = y_2_r = 0;
+}
+
 void Biquad::recalculateCoeffs()
 {
 	fpoint A;
@@ -179,7 +187,7 @@ fpoint Biquad::process(fpoint v, int side)
 		x_2_l = x_1_l;
 		x_1_l = v;
 	}
-	else if (side == RIGHT)
+	else
 	{
 		output = b0a0 * v + b1a0 * x_1_r + b2a0 * x_2_r - a1a0 * y_1_r - a2a0 * y_2_r;
 		y_2_r = y_1_r;

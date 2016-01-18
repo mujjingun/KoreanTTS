@@ -11,11 +11,12 @@ struct Vowel
 
 struct Consonant
 {
-    fpoint f1, f2, f3;
+    fpoint f1, f2;
     fpoint vot;
 };
 
-Vowel get_vowel_formants(int i);
+Vowel const & get_vowel_formants(int i);
+Consonant const & get_consonant_formants(int i);
 fpoint linear(fpoint s, fpoint e, fpoint x, fpoint sx, fpoint ex);
 fpoint clamp(fpoint s, fpoint e, fpoint x);
 
