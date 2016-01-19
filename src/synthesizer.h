@@ -2,6 +2,7 @@
 #define SYNTHESIZER_H
 
 #include <vector>
+#include <random>
 
 #include "main.h"
 #include "biquad.h"
@@ -9,7 +10,7 @@
 class Synthesizer
 {
     public:
-        Synthesizer(){};
+        Synthesizer();
         virtual ~Synthesizer(){};
 
         void start(std::vector<int> const& phonemes);
@@ -32,8 +33,9 @@ class Synthesizer
         fpoint s1, s2, s3;
         fpoint e1, e2, e3;
 
-        bool is_prev;
+        bool is_prev_consonant, is_prev_vowel, is_next;
         fpoint prev1, prev2, prev3;
+        fpoint next1, next2, next3;
 
         fpoint voice_level;
         fpoint voice_level_start;
@@ -47,18 +49,22 @@ class Synthesizer
 
         fpoint burst_duration;
         fpoint vowel_duration;
-        fpoint vowel_progress;
+        fpoint vowel_progress_sec;
         fpoint last_vowel_sec;
         fpoint closure_duration;
 
         fpoint last_period;
 
-        Biquad filt1 = Biquad(Biquad::BPF_CONSTANT_SKIRT, Fs);
-        Biquad filt2 = Biquad(Biquad::BPF_CONSTANT_SKIRT, Fs);
-        Biquad filt3 = Biquad(Biquad::BPF_CONSTANT_SKIRT, Fs);
-        Biquad filt4 = Biquad(Biquad::BPF_CONSTANT_SKIRT, Fs);
-        Biquad burst_filt = Biquad(Biquad::BPF_CONSTANT_SKIRT, Fs);
-        Biquad noise_filt = Biquad(Biquad::LPF, Fs);
+        Biquad filt1;
+        Biquad filt2;
+        Biquad filt3;
+        Biquad filt4;
+        Biquad filt5;
+        Biquad burst_filt;
+        Biquad noise_filt;
+
+        std::default_random_engine noise_generator;
+        std::normal_distribution<fpoint> gauss_distribution;
 };
 
 #endif // SYNTHESIZER_H

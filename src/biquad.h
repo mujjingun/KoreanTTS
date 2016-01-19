@@ -30,6 +30,7 @@ public:
 		RIGHT
 	};
 
+    Biquad(){};
 	Biquad(int type, fpoint sampleRate);
 	virtual ~Biquad(){};
 

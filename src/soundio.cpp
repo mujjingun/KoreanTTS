@@ -5,8 +5,10 @@
 #include "soundio.h"
 #include "main.h"
 
-int SoundIO::init_sound()
+int SoundIO::init_sound(int channels)
 {
+    this->channels = channels;
+
     PaStreamParameters outputParameters;
     PaError err;
 
@@ -17,7 +19,7 @@ int SoundIO::init_sound()
 
     outputParameters.device = Pa_GetDefaultOutputDevice(); /* default output device */
 
-    outputParameters.channelCount = 1;
+    outputParameters.channelCount = channels;
     outputParameters.sampleFormat = paInt16;
     outputParameters.suggestedLatency = Pa_GetDeviceInfo( outputParameters.device )->defaultLowOutputLatency;
     outputParameters.hostApiSpecificStreamInfo = NULL;
@@ -41,7 +43,7 @@ int SoundIO::init_sound()
     //////////////////////////
 
     SF_INFO sfinfo;
-    sfinfo.channels = 1;
+    sfinfo.channels = channels;
     sfinfo.samplerate = Fs;
     sfinfo.format = SF_FORMAT_WAV | SF_FORMAT_PCM_16;
 
@@ -55,7 +57,7 @@ int SoundIO::init_sound()
 int SoundIO::play_sound(int16_t* data, int N)
 {
     PaError err;
-    for(int i = 0; i < N; i += FRAMES_PER_BUFFER)
+    for(int i = 0; i < N; i += FRAMES_PER_BUFFER * channels)
     {
         err = Pa_WriteStream( stream, &data[i], FRAMES_PER_BUFFER );
         if( err != paNoError ) return 1;
@@ -77,6 +79,7 @@ int SoundIO::end_sound()
     Pa_Terminate();
 
     sf_close(file);
+    puts("File Closed");
 
     return 0;
 }

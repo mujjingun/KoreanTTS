@@ -15,12 +15,14 @@ class SoundIO
 
         SNDFILE *file;
 
+        int channels;
+
     public:
 
         SoundIO(){};
         virtual ~SoundIO(){};
 
-        int init_sound();
+        int init_sound(int channels);
         int play_sound(int16_t* data, int N);
         int end_sound();
         static int16_t normalize(const fpoint& x);

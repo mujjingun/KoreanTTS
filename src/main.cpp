@@ -21,9 +21,8 @@ int main(int argc, char *argv[])
     if(getchar() == 'y') {
         use_sound = true;
         soundio = new SoundIO();
+        soundio->init_sound(1);
     }
-
-    if(use_sound) soundio->init_sound();
 
     while(1)
     {
@@ -48,7 +47,11 @@ int main(int argc, char *argv[])
         synth.start(in);
 
         while(!synth.has_ended())
-            out.push_back(synth.generate_sample());
+        {
+            int16_t generated = synth.generate_sample();
+            out.push_back(generated);
+            //out.push_back(-generated);
+        }
 
         finish = clock();
 
@@ -56,14 +59,10 @@ int main(int argc, char *argv[])
         std::cout << std::endl;
         std::cout << ft_rate << " samples per second." << std::endl;
         std::cout << "lags " << Fs - ft_rate << "s per second" << std::endl;
-        std::cout << "out buffer size: " << out.size() * 16 << " bytes" << std::endl;
+        std::cout << "out buffer size: " << out.size() * 16 << " bytes\n" << std::endl;
 
         if(use_sound)
         {
-            std::cout << "press enter to play" << std::endl;
-            fflush(stdin);
-            if(getchar() == 'q') break;
-
             soundio->play_sound(&out[0], out.size());
         }
     }

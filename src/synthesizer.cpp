@@ -1,9 +1,23 @@
 #include <cstdlib>
+#include <cmath>
 
 #include "synthesizer.h"
 #include "soundio.h"
 #include "formants.h"
 #include "oscilator.h"
+
+Synthesizer::Synthesizer()
+{
+    gauss_distribution = std::normal_distribution<fpoint>(-1.0, 1.0);
+
+    filt1 = Biquad(Biquad::BPF_CONSTANT_SKIRT, Fs);
+    filt2 = Biquad(Biquad::BPF_CONSTANT_SKIRT, Fs);
+    filt3 = Biquad(Biquad::BPF_CONSTANT_SKIRT, Fs);
+    filt4 = Biquad(Biquad::BPF_CONSTANT_SKIRT, Fs);
+    filt5 = Biquad(Biquad::BPF_CONSTANT_SKIRT, Fs);
+    burst_filt = Biquad(Biquad::BPF_CONSTANT_SKIRT, Fs);
+    noise_filt = Biquad(Biquad::LPF, Fs);
+}
 
 void Synthesizer::start(std::vector<int> const& phonemes)
 {
@@ -18,19 +32,20 @@ void Synthesizer::start(std::vector<int> const& phonemes)
     filt2.reset();
     filt3.reset();
     filt4.reset();
+    filt5.reset();
     burst_filt.reset();
 }
 
 int Synthesizer::update_params()
 {
     fpoint sec = fpoint(sample_idx) / Fs;
-    fpoint vowel_progress_sec = sec - last_vowel_sec;
-    fpoint vowel_progress = vowel_progress_sec / vowel_duration;
+    vowel_progress_sec = sec - last_vowel_sec;
 
     if(vowel_idx < 0 || vowel_progress_sec > vowel_duration)
     {
         if((size_t)++vowel_idx >= phonemes.size()) return sample_idx;
         last_vowel_sec = sec;
+        vowel_progress_sec = 0;
 
         int ch = phonemes[vowel_idx];
 
@@ -54,16 +69,19 @@ int Synthesizer::update_params()
             // is there a pause before the vowel
             if(vowel_idx == 0 || phonemes[vowel_idx - 1] >= 300)
             {
-                is_prev = false;
+                is_prev_consonant = false;
+                is_prev_vowel = false;
             }
             else
             {
-                is_prev = true;
                 int prev_ch = phonemes[vowel_idx - 1];
 
                 // previously a vowel
                 if(prev_ch < 100)
                 {
+                    is_prev_consonant = false;
+                    is_prev_vowel = true;
+
                     Vowel prev_vowel = get_vowel_formants(prev_ch);
                     prev1 = prev_vowel.e1;
                     prev2 = prev_vowel.e2;
@@ -72,11 +90,31 @@ int Synthesizer::update_params()
                 // previously *should be* an inital consonant
                 else
                 {
+                    is_prev_consonant = true;
+                    is_prev_vowel = false;
+
                     Consonant prev_consonant = get_consonant_formants(prev_ch - 100);
                     prev1 = prev_consonant.f1;
                     prev2 = prev_consonant.f2;
                     prev3 = vowel.s3;
                 }
+            }
+
+            // next is a vowel
+            if((size_t)vowel_idx < phonemes.size() - 1 && phonemes[vowel_idx + 1] < 100)
+            {
+                is_next = true;
+
+                int next_ch = phonemes[vowel_idx + 1];
+
+                Vowel next_vowel = get_vowel_formants(next_ch);
+                next1 = next_vowel.s1;
+                next2 = next_vowel.s2;
+                next3 = next_vowel.s3;
+            }
+            else
+            {
+                is_next = false;
             }
 
             voice_level_start = 0;
@@ -133,32 +171,48 @@ int Synthesizer::update_params()
 
     if(is_vowel)
     {
-        f1 = linear(s1, e1, vowel_progress_sec, 0, 0.15);
-        f2 = linear(s2, e2, vowel_progress_sec, 0, 0.15);
-        f3 = linear(s3, e3, vowel_progress_sec, 0, 0.15);
+        f1 = linear(s1, e1, vowel_progress_sec, 0, 0.1);
+        f2 = linear(s2, e2, vowel_progress_sec, 0, 0.1);
+        f3 = linear(s3, e3, vowel_progress_sec, 0, 0.1);
 
-        if(is_prev)
+        if(is_prev_consonant)
         {
             f1 = linear(prev1, f1, vowel_progress_sec, -0.6, 0.1);
             f2 = linear(prev2, f2, vowel_progress_sec, -0.6, 0.1);
             f3 = linear(prev3, f3, vowel_progress_sec, -0.6, 0.1);
         }
 
-        voice_level = linear(voice_level_start, voice_level_end, vowel_progress_sec, 0, 0.035);
-        voice_level = linear(voice_level, 0, vowel_progress_sec, vowel_duration - 0.05, vowel_duration);
+        if(is_next)
+        {
+            f1 = linear(f1, next1, vowel_progress_sec, vowel_duration - 0.05, vowel_duration);
+            f2 = linear(f2, next2, vowel_progress_sec, vowel_duration - 0.05, vowel_duration);
+            f3 = linear(f3, next3, vowel_progress_sec, vowel_duration - 0.05, vowel_duration);
+        }
+
+        if(is_prev_vowel)
+        {
+            voice_level = voice_level_end;
+        }
+        else
+        {
+            voice_level = linear(voice_level_start, voice_level_end, vowel_progress_sec, 0, 0.01);
+        }
+
+        if(!is_next)
+        {
+            voice_level = linear(voice_level, 0, vowel_progress_sec, vowel_duration - 0.15, vowel_duration);
+        }
     }
     // stop consonant
     else if(!is_vowel)
     {
-        fpoint since_vot = vowel_progress_sec - closure_duration;
-
         // burst
         if(occluding && vowel_progress_sec > closure_duration)
         {
             occluding = false;
             bursting = true;
 
-            burst_level = 0.5;
+            burst_level = 0.1;
         }
         // aspiration
         else if(vowel_progress_sec > closure_duration)
@@ -168,11 +222,11 @@ int Synthesizer::update_params()
 
             burst_level = 0;
 
-            noise_level = 0.4;
+            noise_level = 0.01;
 
-            f1 = linear(s1, e1, since_vot, -0.3, vowel_duration + 0.1);
-            f2 = linear(s2, e2, since_vot, -0.3, vowel_duration + 0.1);
-            f3 = linear(s3, e3, since_vot, -0.3, vowel_duration + 0.1);
+            f1 = linear(s1, e1, vowel_progress_sec, -0.3, vowel_duration);
+            f2 = linear(s2, e2, vowel_progress_sec, -0.3, vowel_duration);
+            f3 = linear(s3, e3, vowel_progress_sec, -0.3, vowel_duration);
         }
     }
 
@@ -191,38 +245,43 @@ int16_t Synthesizer::generate_sample()
 
     fpoint result = 0;
 
-    fpoint in = gen_signal(250 - sample_idx / 400, voice_level, noise_level);
+    fpoint in = gen_signal(250 - sin(vowel_progress_sec * 10) * 30, voice_level, noise_level);
 
     filt1.setF0(f1);
-    filt1.setQ(f1 / 20);
+    filt1.setQ(f1 / 80);
     filt1.recalculateCoeffs();
 
     filt2.setF0(f2);
-    filt2.setQ(f2 / 20);
+    filt2.setQ(f2 / 80);
     filt2.recalculateCoeffs();
 
     filt3.setF0(f3);
-    filt3.setQ(f3 / 20);
+    filt3.setQ(f3 / 80);
     filt3.recalculateCoeffs();
 
-    filt4.setF0(5000);
-    filt4.setQ(30);
+    filt4.setF0(4500);
+    filt4.setQ(4500 / 80);
     filt4.recalculateCoeffs();
+
+    filt5.setF0(5500);
+    filt5.setQ(5500 / 80);
+    filt5.recalculateCoeffs();
 
     fpoint v1 = filt1.process(in, Biquad::LEFT);
     fpoint v2 = filt2.process(in, Biquad::LEFT);
     fpoint v3 = filt3.process(in, Biquad::LEFT);
     fpoint v4 = filt4.process(in, Biquad::LEFT);
+    fpoint v5 = filt5.process(in, Biquad::LEFT);
 
     if(is_vowel || aspirating)
     {
-        fpoint add = (v1 * 3 + v2 * 2 + v3 + v4 * 0.05) / 50;
+        fpoint add = (v1 + v2 + v3 + v4 * 0.4 + v5 * 0.3) / 10;
 
         result += add;
     }
 
-    burst_filt.setF0(4000);
-    burst_filt.setQ(2);
+    burst_filt.setF0(400);
+    burst_filt.setQ(8);
     burst_filt.recalculateCoeffs();
 
     result += burst_filt.process(burst_level, Biquad::LEFT);
@@ -247,10 +306,11 @@ fpoint Synthesizer::gen_signal(fpoint freq, fpoint voice_level, fpoint noise_lev
 fpoint Synthesizer::noise()
 {
     noise_filt.setF0(5000);
-    noise_filt.setQ(1);
+    noise_filt.setQ(20);
     noise_filt.recalculateCoeffs();
-    fpoint noise = fpoint(rand()) / RAND_MAX;
-    return noise;//noise_filt.process(noise, Biquad::LEFT);
+
+    fpoint noise = gauss_distribution(noise_generator);
+    return noise_filt.process(noise, Biquad::LEFT);
 }
 
 bool Synthesizer::has_ended()
