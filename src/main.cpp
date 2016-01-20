@@ -11,8 +11,8 @@
 int main(int argc, char *argv[])
 {
     clock_t start, finish;
-    std::vector<int16_t> out;
-    SoundIO *soundio;
+    std::vector<float> out;
+    SoundIO soundio;
     Synthesizer synth;
 
     bool use_sound = false;
@@ -20,8 +20,7 @@ int main(int argc, char *argv[])
     fflush(stdin);
     if(getchar() == 'y') {
         use_sound = true;
-        soundio = new SoundIO();
-        soundio->init_sound(1);
+        soundio.init_sound(2);
     }
 
     while(1)
@@ -48,9 +47,9 @@ int main(int argc, char *argv[])
 
         while(!synth.has_ended())
         {
-            int16_t generated = synth.generate_sample();
-            out.push_back(generated);
-            //out.push_back(-generated);
+            fpoint generated = synth.generate_sample();
+            out.push_back((float)generated);
+            out.push_back((float)generated);
         }
 
         finish = clock();
@@ -63,11 +62,11 @@ int main(int argc, char *argv[])
 
         if(use_sound)
         {
-            soundio->play_sound(&out[0], out.size());
+            soundio.play_sound(&out[0], out.size());
         }
     }
 
-    if(use_sound) soundio->end_sound();
+    if(use_sound) soundio.end_sound();
 
     return 0;
 }

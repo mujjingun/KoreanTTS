@@ -20,7 +20,7 @@ int SoundIO::init_sound(int channels)
     outputParameters.device = Pa_GetDefaultOutputDevice(); /* default output device */
 
     outputParameters.channelCount = channels;
-    outputParameters.sampleFormat = paInt16;
+    outputParameters.sampleFormat = paFloat32;
     outputParameters.suggestedLatency = Pa_GetDeviceInfo( outputParameters.device )->defaultLowOutputLatency;
     outputParameters.hostApiSpecificStreamInfo = NULL;
 
@@ -45,16 +45,16 @@ int SoundIO::init_sound(int channels)
     SF_INFO sfinfo;
     sfinfo.channels = channels;
     sfinfo.samplerate = Fs;
-    sfinfo.format = SF_FORMAT_WAV | SF_FORMAT_PCM_16;
+    sfinfo.format = SF_FORMAT_OGG | SF_FORMAT_VORBIS;
 
-    file = sf_open("sound.wav", SFM_WRITE, &sfinfo);
+    file = sf_open("sound.ogg", SFM_WRITE, &sfinfo);
 
     puts("File Opened");
 
     return 0;
 }
 
-int SoundIO::play_sound(int16_t* data, int N)
+int SoundIO::play_sound(float* data, int N)
 {
     PaError err;
     for(int i = 0; i < N; i += FRAMES_PER_BUFFER * channels)
@@ -63,8 +63,7 @@ int SoundIO::play_sound(int16_t* data, int N)
         if( err != paNoError ) return 1;
     }
 
-    sf_write_short(file, data, N);
-    sf_write_sync(file);
+    sf_write_float(file, data, N);
 
     return 0;
 }
@@ -78,6 +77,7 @@ int SoundIO::end_sound()
 
     Pa_Terminate();
 
+    sf_write_sync(file);
     sf_close(file);
     puts("File Closed");
 

@@ -10,11 +10,12 @@ Synthesizer::Synthesizer()
 {
     gauss_distribution = std::normal_distribution<fpoint>(-1.0, 1.0);
 
-    filt1 = Biquad(Biquad::BPF_CONSTANT_SKIRT, Fs);
-    filt2 = Biquad(Biquad::BPF_CONSTANT_SKIRT, Fs);
-    filt3 = Biquad(Biquad::BPF_CONSTANT_SKIRT, Fs);
-    filt4 = Biquad(Biquad::BPF_CONSTANT_SKIRT, Fs);
-    filt5 = Biquad(Biquad::BPF_CONSTANT_SKIRT, Fs);
+    filt.f1 = Biquad(Biquad::BPF_CONSTANT_SKIRT, Fs);
+    filt.f2 = Biquad(Biquad::BPF_CONSTANT_SKIRT, Fs);
+    filt.f3 = Biquad(Biquad::BPF_CONSTANT_SKIRT, Fs);
+    filt.f4 = Biquad(Biquad::BPF_CONSTANT_SKIRT, Fs);
+    filt.f5 = Biquad(Biquad::BPF_CONSTANT_SKIRT, Fs);
+
     burst_filt = Biquad(Biquad::BPF_CONSTANT_SKIRT, Fs);
     noise_filt = Biquad(Biquad::LPF, Fs);
 }
@@ -28,11 +29,7 @@ void Synthesizer::start(std::vector<int> const& phonemes)
     last_vowel_sec = 0;
     vowel_idx = -1;
     burst_duration = 0.001;
-    filt1.reset();
-    filt2.reset();
-    filt3.reset();
-    filt4.reset();
-    filt5.reset();
+    filt.reset();
     burst_filt.reset();
 }
 
@@ -55,6 +52,10 @@ int Synthesizer::update_params()
         if(ch < 100)
         {
             is_vowel = true;
+
+            occluding = false;
+            bursting = false;
+            aspirating = false;
 
             Vowel vowel = get_vowel_formants(ch);
 
@@ -144,6 +145,7 @@ int Synthesizer::update_params()
 
             voice_level = 0;
 
+            aspiration_level = 0.03;
             noise_level = 0;
 
             burst_level = 0;
@@ -152,7 +154,7 @@ int Synthesizer::update_params()
             bursting = false;
             aspirating = false;
 
-            closure_duration = 0.01;
+            closure_duration = 0.02;
             vowel_duration = closure_duration + consonant.vot;
 
         }
@@ -212,7 +214,7 @@ int Synthesizer::update_params()
             occluding = false;
             bursting = true;
 
-            burst_level = 0.1;
+            burst_level = 0.3;
         }
         // aspiration
         else if(vowel_progress_sec > closure_duration)
@@ -222,7 +224,7 @@ int Synthesizer::update_params()
 
             burst_level = 0;
 
-            noise_level = 0.01;
+            noise_level = linear(0, aspiration_level, vowel_progress_sec, closure_duration, vowel_duration);
 
             f1 = linear(s1, e1, vowel_progress_sec, -0.3, vowel_duration);
             f2 = linear(s2, e2, vowel_progress_sec, -0.3, vowel_duration);
@@ -233,7 +235,7 @@ int Synthesizer::update_params()
     return -1;
 }
 
-int16_t Synthesizer::generate_sample()
+fpoint Synthesizer::generate_sample()
 {
     sample_idx++;
 
@@ -245,37 +247,37 @@ int16_t Synthesizer::generate_sample()
 
     fpoint result = 0;
 
-    fpoint in = gen_signal(250 - sin(vowel_progress_sec * 10) * 30, voice_level, noise_level);
+    fpoint in = gen_signal(290 - sin(vowel_progress_sec * 10) * 50, voice_level, noise_level);
 
-    filt1.setF0(f1);
-    filt1.setQ(f1 / 80);
-    filt1.recalculateCoeffs();
+    filt.f1.setF0(f1);
+    filt.f1.setQ(f1 / 80);
+    filt.f1.recalculateCoeffs();
 
-    filt2.setF0(f2);
-    filt2.setQ(f2 / 80);
-    filt2.recalculateCoeffs();
+    filt.f2.setF0(f2);
+    filt.f2.setQ(f2 / 80);
+    filt.f2.recalculateCoeffs();
 
-    filt3.setF0(f3);
-    filt3.setQ(f3 / 80);
-    filt3.recalculateCoeffs();
+    filt.f3.setF0(f3);
+    filt.f3.setQ(f3 / 80);
+    filt.f3.recalculateCoeffs();
 
-    filt4.setF0(4500);
-    filt4.setQ(4500 / 80);
-    filt4.recalculateCoeffs();
+    filt.f4.setF0(4500);
+    filt.f4.setQ(4500.0 / 80);
+    filt.f4.recalculateCoeffs();
 
-    filt5.setF0(5500);
-    filt5.setQ(5500 / 80);
-    filt5.recalculateCoeffs();
+    filt.f5.setF0(5500);
+    filt.f5.setQ(5500.0 / 80);
+    filt.f5.recalculateCoeffs();
 
-    fpoint v1 = filt1.process(in, Biquad::LEFT);
-    fpoint v2 = filt2.process(in, Biquad::LEFT);
-    fpoint v3 = filt3.process(in, Biquad::LEFT);
-    fpoint v4 = filt4.process(in, Biquad::LEFT);
-    fpoint v5 = filt5.process(in, Biquad::LEFT);
+    fpoint v1 = filt.f1.process(in, Biquad::LEFT);
+    fpoint v2 = filt.f2.process(in, Biquad::LEFT);
+    fpoint v3 = filt.f3.process(in, Biquad::LEFT);
+    fpoint v4 = filt.f4.process(in, Biquad::LEFT);
+    fpoint v5 = filt.f5.process(in, Biquad::LEFT);
 
     if(is_vowel || aspirating)
     {
-        fpoint add = (v1 + v2 + v3 + v4 * 0.4 + v5 * 0.3) / 10;
+        fpoint add = (v1 * 1.3 + v2 + v3 + v4 * 0.1 + v5 * 0.1) / 10;
 
         result += add;
     }
@@ -286,7 +288,7 @@ int16_t Synthesizer::generate_sample()
 
     result += burst_filt.process(burst_level, Biquad::LEFT);
 
-    return SoundIO::normalize(result);
+    return result;
 }
 
 fpoint Synthesizer::gen_signal(fpoint freq, fpoint voice_level, fpoint noise_level)
@@ -306,7 +308,7 @@ fpoint Synthesizer::gen_signal(fpoint freq, fpoint voice_level, fpoint noise_lev
 fpoint Synthesizer::noise()
 {
     noise_filt.setF0(5000);
-    noise_filt.setQ(20);
+    noise_filt.setQ(1);
     noise_filt.recalculateCoeffs();
 
     fpoint noise = gauss_distribution(noise_generator);

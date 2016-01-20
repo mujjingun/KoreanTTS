@@ -7,25 +7,25 @@
 
 class SoundIO
 {
-    private:
+private:
 
-        const int FRAMES_PER_BUFFER = 1024;
+    const int FRAMES_PER_BUFFER = 1024;
 
-        PaStream *stream;
+    PaStream *stream;
 
-        SNDFILE *file;
+    SNDFILE *file;
 
-        int channels;
+    int channels;
 
-    public:
+public:
 
-        SoundIO(){};
-        virtual ~SoundIO(){};
+    SoundIO() {};
+    virtual ~SoundIO() {};
 
-        int init_sound(int channels);
-        int play_sound(int16_t* data, int N);
-        int end_sound();
-        static int16_t normalize(const fpoint& x);
+    int init_sound(int channels);
+    int play_sound(float* data, int N);
+    int end_sound();
+    static int16_t normalize(const fpoint& x);
 
 };
 
