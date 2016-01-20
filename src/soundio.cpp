@@ -59,13 +59,8 @@ int SoundIO::play_sound(float* data, int N)
 {
     PaError err;
     int floats_per_frame = FRAMES_PER_BUFFER * channels;
-    for(int i = 0; i < N; i += floats_per_frame)
+    for(int i = 0; i + floats_per_frame < N; i += floats_per_frame)
     {
-        int frames = FRAMES_PER_BUFFER;
-        if(i < N)
-        {
-            frames = (N - i) / channels;
-        }
         err = Pa_WriteStream( stream, &data[i], FRAMES_PER_BUFFER );
         if( err != paNoError ) return 1;
     }
