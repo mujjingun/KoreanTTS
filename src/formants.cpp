@@ -1,5 +1,6 @@
-#include <cmath>
+#include <cmath> // fmin, fmax
 #include "formants.h"
+#include "consonants.h"
 
 /*
 Vowel* formantsMale[] = {
@@ -95,44 +96,46 @@ const Vowel vowel_formants[] = {
 
 const Consonant consonant_formants[] = {
     // 0. ㄱ
-    {20, 3500, 0.053},
+    Consonant(),
     // 1. ㄲ
-    {20, 3500, 0.024},
+    Consonant(),
     // 2. ㄴ
-    {},
+    Consonant(),
     // 3. ㄷ
-    {20, 1800, 0.039},
+    Consonant(),
     // 4. ㄸ
-    {20, 1800, 0.016},
+    Consonant(),
     // 5. ㄹ
-    {},
+    Consonant(),
     // 6. ㅁ
-    {},
+    Consonant(),
     // 7. ㅂ
-    {20, 800, 0.035},
+    Bieup(),
     // 8. ㅃ
-    {20, 800, 0.009},
+    Consonant(),
     // 9. ㅅ
-    {},
+    Consonant(),
     // 10. ㅆ
-    {},
+    Consonant(),
     // 11. ㅇ
-    {},
+    Consonant(),
     // 12. ㅈ
-    {},
+    Consonant(),
     // 13. ㅉ
-    {},
+    Consonant(),
     // 14. ㅊ
-    {},
+    Consonant(),
     // 15. ㅋ
-    {20, 3500, 0.095},
+    Consonant(),
     // 16. ㅌ
-    {20, 1800, 0.075},
+    Consonant(),
     // 17. ㅍ
-    {20, 800, 0.075},
+    Consonant(),
     // 18. ㅎ
-    {}
+    Consonant()
 };
+// ieung
+Consonant null_consonant = consonant_formants[11];
 
 Vowel const & get_vowel_formants(int i)
 {

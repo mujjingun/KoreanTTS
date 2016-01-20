@@ -1,5 +1,6 @@
-#include "oscilator.h"
-#include "formants.h"
+#include "vocal.h"
+#include "soundio.h"
+#include "formants.h" // linear()
 
 fpoint srcwave[468] =
 {
@@ -89,3 +90,4 @@ fpoint osc_get_sample(fpoint x)
     int ind1 = int(x * len);
     return linear(srcwave[ind1], srcwave[ind1 + 1], x, ind1, ind1 + 1);
 }
+

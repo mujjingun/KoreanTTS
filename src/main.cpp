@@ -18,9 +18,10 @@ int main(int argc, char *argv[])
     bool use_sound = false;
     std::cout<<"Use sound I/O? ";
     fflush(stdin);
-    if(getchar() == 'y') {
+    if(getchar() == 'y')
+    {
         use_sound = true;
-        soundio.init_sound(2);
+        soundio.init_sound(1);
     }
 
     while(1)
@@ -49,7 +50,7 @@ int main(int argc, char *argv[])
         {
             fpoint generated = synth.generate_sample();
             out.push_back((float)generated);
-            out.push_back((float)generated);
+            //out.push_back((float)generated);
         }
 
         finish = clock();
@@ -66,7 +67,10 @@ int main(int argc, char *argv[])
         }
     }
 
-    if(use_sound) soundio.end_sound();
+    if(use_sound)
+    {
+        soundio.end_sound();
+    }
 
     return 0;
 }

@@ -45,9 +45,10 @@ int SoundIO::init_sound(int channels)
     SF_INFO sfinfo;
     sfinfo.channels = channels;
     sfinfo.samplerate = Fs;
-    sfinfo.format = SF_FORMAT_OGG | SF_FORMAT_VORBIS;
+    //sfinfo.format = SF_FORMAT_OGG | SF_FORMAT_VORBIS;
+    sfinfo.format = SF_FORMAT_WAV | SF_FORMAT_FLOAT;
 
-    file = sf_open("sound.ogg", SFM_WRITE, &sfinfo);
+    file = sf_open("sound.wav", SFM_WRITE, &sfinfo);
 
     puts("File Opened");
 
