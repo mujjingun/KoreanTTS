@@ -35,7 +35,9 @@ public:
     fpoint f1, f2;
     fpoint duration;
 
-    Consonant(fpoint f1, fpoint f2, fpoint duration);
+    Consonant(fpoint f1, fpoint f2, fpoint duration)
+    : f1(f1), f2(f2), duration(duration){};
+
     Consonant(): Consonant(0, 0, 0.5) {};
 
     virtual ~Consonant(){}

@@ -130,7 +130,7 @@ Consonant *consonant_formants[] = {
     // 16. ㅌ
     new Consonant(),
     // 17. ㅍ
-    new Consonant(),
+    new Pieup(),
     // 18. ㅎ
     new Consonant()
 };

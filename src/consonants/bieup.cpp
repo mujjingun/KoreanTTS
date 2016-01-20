@@ -1,11 +1,5 @@
-#include "consonants.h"
-#include "vocal.h"
-
-Consonant::Consonant(fpoint f1, fpoint f2, fpoint duration)
-: f1(f1), f2(f2), duration(duration)
-{
-    // TODO
-}
+#include "../consonants.h"
+#include "../vocal.h"
 
 ////////////////////////////////////////
 //
@@ -14,7 +8,7 @@ Consonant::Consonant(fpoint f1, fpoint f2, fpoint duration)
 ////////////////////////////////////////
 
 Bieup::Bieup()
-: Consonant(20, 800, 0.02 + 0.035)
+: Consonant(20, 800, 0.02 + 0.020)
 {
     closure_duration = 0.02;
 
@@ -34,7 +28,7 @@ void Bieup::init(FormantFilters & filt, const Vowel & next_vowel)
     e3 = next_vowel.s3;
 
     burst_level = 0;
-    aspiration_level = 0.03;
+    aspiration_level = 0.005;
 
     occluding = true;
     bursting = false;
@@ -52,7 +46,7 @@ fpoint Bieup::gen_sample(fpoint progress_sec)
         occluding = false;
         bursting = true;
 
-        burst_level = 0.3;
+        burst_level = 0.2;
     }
     // aspiration
     else if(progress_sec > closure_duration)
