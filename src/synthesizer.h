@@ -2,7 +2,6 @@
 #define SYNTHESIZER_H
 
 #include <vector>
-#include <random>
 
 #include "main.h"
 #include "biquad.h"
@@ -35,7 +34,7 @@ private:
     fpoint s1, s2, s3;
     fpoint e1, e2, e3;
 
-    Consonant & current_consonant;
+    Consonant *current_consonant;
 
     bool is_prev_consonant, is_prev_vowel, is_next;
     fpoint prev1, prev2, prev3;
@@ -55,11 +54,7 @@ private:
 
     FormantFilters filt;
 
-    Biquad burst_filt;
     Biquad noise_filt;
-
-    std::default_random_engine noise_generator;
-    std::normal_distribution<fpoint> gauss_distribution;
 };
 
 #endif // SYNTHESIZER_H

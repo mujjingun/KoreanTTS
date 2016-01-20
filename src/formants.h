@@ -38,19 +38,23 @@ public:
     Consonant(fpoint f1, fpoint f2, fpoint duration);
     Consonant(): Consonant(0, 0, 0.5) {};
 
-    //Consonant(const Consonant&) = delete;
+    virtual ~Consonant(){}
+
+    Consonant(const Consonant&) = delete;
     Consonant& operator=(const Consonant&) = delete;
 
-    virtual void init(const FormantFilters & filt, const Vowel & next_vowel){};
-    virtual fpoint gen_sample(int progress_sec){return 0;};
+    virtual void init(FormantFilters & filt, const Vowel & next_vowel){};
+    virtual fpoint gen_sample(fpoint progress_sec){return 0;};
+
+protected:
+    FormantFilters *filt;
 };
 
-
-Vowel const & get_vowel_formants(int i);
-Consonant const & get_consonant_formants(int i);
+const Vowel & get_vowel_formants(int i);
+Consonant * get_consonant_formants(int i);
 fpoint linear(fpoint s, fpoint e, fpoint x, fpoint sx, fpoint ex);
 fpoint clamp(fpoint s, fpoint e, fpoint x);
 
-extern Consonant null_consonant;
+extern Consonant* null_consonant;
 
 #endif // FORMANTS_H_INCLUDED

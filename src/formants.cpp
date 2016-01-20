@@ -94,55 +94,55 @@ const Vowel vowel_formants[] = {
     {344, 2814, 3471, 344, 2814, 3471}
 };
 
-const Consonant consonant_formants[] = {
+Consonant *consonant_formants[] = {
     // 0. ㄱ
-    Consonant(),
+    new Consonant(),
     // 1. ㄲ
-    Consonant(),
+    new Consonant(),
     // 2. ㄴ
-    Consonant(),
+    new Consonant(),
     // 3. ㄷ
-    Consonant(),
+    new Consonant(),
     // 4. ㄸ
-    Consonant(),
+    new Consonant(),
     // 5. ㄹ
-    Consonant(),
+    new Consonant(),
     // 6. ㅁ
-    Consonant(),
+    new Consonant(),
     // 7. ㅂ
-    Bieup(),
+    new Bieup(),
     // 8. ㅃ
-    Consonant(),
+    new Consonant(),
     // 9. ㅅ
-    Consonant(),
+    new Consonant(),
     // 10. ㅆ
-    Consonant(),
+    new Consonant(),
     // 11. ㅇ
-    Consonant(),
+    new Consonant(),
     // 12. ㅈ
-    Consonant(),
+    new Consonant(),
     // 13. ㅉ
-    Consonant(),
+    new Consonant(),
     // 14. ㅊ
-    Consonant(),
+    new Consonant(),
     // 15. ㅋ
-    Consonant(),
+    new Consonant(),
     // 16. ㅌ
-    Consonant(),
+    new Consonant(),
     // 17. ㅍ
-    Consonant(),
+    new Consonant(),
     // 18. ㅎ
-    Consonant()
+    new Consonant()
 };
 // ieung
-Consonant null_consonant = consonant_formants[11];
+Consonant * null_consonant = new Consonant();
 
-Vowel const & get_vowel_formants(int i)
+const Vowel & get_vowel_formants(int i)
 {
     return vowel_formants[i];
 }
 
-Consonant const & get_consonant_formants(int i)
+Consonant * get_consonant_formants(int i)
 {
     return consonant_formants[i];
 }

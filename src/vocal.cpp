@@ -1,3 +1,5 @@
+#include <random>
+
 #include "vocal.h"
 #include "soundio.h"
 #include "formants.h" // linear()
@@ -91,3 +93,10 @@ fpoint osc_get_sample(fpoint x)
     return linear(srcwave[ind1], srcwave[ind1 + 1], x, ind1, ind1 + 1);
 }
 
+std::default_random_engine noise_generator;
+std::normal_distribution<fpoint> gauss_distribution(-1.0, 1.0);
+
+fpoint osc_noise()
+{
+    return gauss_distribution(noise_generator);
+}
