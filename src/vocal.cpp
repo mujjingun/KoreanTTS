@@ -94,9 +94,9 @@ fpoint osc_get_sample(fpoint x)
 }
 
 std::default_random_engine noise_generator;
-std::normal_distribution<fpoint> gauss_distribution(-1.0, 1.0);
+std::normal_distribution<fpoint> gauss_distribution(0, 1.0);
 
 fpoint osc_noise()
 {
-    return gauss_distribution(noise_generator);
+    return clamp(-1, 1, gauss_distribution(noise_generator));
 }

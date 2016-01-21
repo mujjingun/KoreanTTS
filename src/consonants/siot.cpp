@@ -8,25 +8,32 @@
 ////////////////////////////////////////
 
 Siot::Siot()
-: Consonant(20, 1800, 0.07)
+: Consonant(20, 1800, 0.1)
 {
-    lpf = Biquad(Biquad::LPF, Fs);
+    hpf = Biquad(Biquad::BPF_CONSTANT_SKIRT, Fs);
 }
 
 void Siot::init(const Vowel & next_vowel)
 {
-    lpf.setF0(3500);
-    lpf.setQ(1);
-    lpf.recalculateCoeffs();
 }
 
 fpoint Siot::gen_sample(fpoint progress_sec)
 {
     fpoint result = 0;
 
-    fpoint in = osc_noise() * 0.1;
+    fpoint noise_level;
 
-    result += lpf.process(in, Biquad::LEFT);
+    noise_level = linear(0, 0.2, progress_sec, 0, 0.05);
+
+    fpoint freq = linear(6000, 2000, progress_sec, 0, duration);
+
+    hpf.setF0(freq);
+    hpf.setQ(0.1);
+    hpf.recalculateCoeffs();
+
+    fpoint in = osc_noise() * noise_level;
+
+    result += hpf.process(in, Biquad::LEFT);
 
     return result;
 }

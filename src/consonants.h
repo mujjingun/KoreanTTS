@@ -56,7 +56,7 @@ public:
     virtual fpoint gen_sample(fpoint progress_sec);
 
 private:
-    Biquad lpf;
+    Biquad hpf;
 };
 
 class Pieup : public Consonant
