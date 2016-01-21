@@ -23,7 +23,7 @@ public:
     virtual ~SoundIO() {};
 
     int init_sound(int channels);
-    int play_sound(float* data, int N);
+    int play_sound(std::vector<float> data);
     int end_sound();
     static int16_t normalize(const fpoint& x);
 

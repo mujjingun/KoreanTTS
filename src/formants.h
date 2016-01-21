@@ -4,25 +4,6 @@
 #include "main.h"
 #include "biquad.h"
 
-class FormantFilters
-{
-public:
-    Biquad f1;
-    Biquad f2;
-    Biquad f3;
-    Biquad f4;
-    Biquad f5;
-
-    void reset()
-    {
-        f1.reset();
-        f2.reset();
-        f3.reset();
-        f4.reset();
-        f5.reset();
-    }
-};
-
 struct Vowel
 {
     fpoint s1, s2, s3;
@@ -38,18 +19,15 @@ public:
     Consonant(fpoint f1, fpoint f2, fpoint duration)
     : f1(f1), f2(f2), duration(duration){};
 
-    Consonant(): Consonant(0, 0, 0.5) {};
+    Consonant(): Consonant(0, 0, 0.1) {};
 
     virtual ~Consonant(){}
 
     Consonant(const Consonant&) = delete;
     Consonant& operator=(const Consonant&) = delete;
 
-    virtual void init(FormantFilters & filt, const Vowel & next_vowel){};
+    virtual void init(const Vowel & next_vowel){};
     virtual fpoint gen_sample(fpoint progress_sec){return 0;};
-
-protected:
-    FormantFilters *filt;
 };
 
 const Vowel & get_vowel_formants(int i);

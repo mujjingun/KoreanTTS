@@ -7,6 +7,25 @@
 #include "biquad.h"
 #include "formants.h"
 
+class FormantFilters
+{
+public:
+    Biquad f1;
+    Biquad f2;
+    Biquad f3;
+    Biquad f4;
+    Biquad f5;
+
+    void reset()
+    {
+        f1.reset();
+        f2.reset();
+        f3.reset();
+        f4.reset();
+        f5.reset();
+    }
+};
+
 class Synthesizer
 {
 public:

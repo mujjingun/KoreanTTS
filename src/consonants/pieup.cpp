@@ -13,12 +13,14 @@ Pieup::Pieup()
     closure_duration = 0.02;
 
     burst_filt = Biquad(Biquad::BPF_CONSTANT_SKIRT, Fs);
+
+    filt1 = Biquad(Biquad::BPF_CONSTANT_SKIRT, Fs);
+    filt2 = Biquad(Biquad::BPF_CONSTANT_SKIRT, Fs);
+    filt3 = Biquad(Biquad::BPF_CONSTANT_SKIRT, Fs);
 }
 
-void Pieup::init(FormantFilters & filt, const Vowel & next_vowel)
+void Pieup::init(const Vowel & next_vowel)
 {
-    this->filt = &filt;
-
     s1 = f1;
     s2 = f2;
     s3 = next_vowel.s3;
@@ -66,21 +68,21 @@ fpoint Pieup::gen_sample(fpoint progress_sec)
 
         fpoint in = osc_noise() * noise_level;
 
-        filt->f1.setF0(f1);
-        filt->f1.setQ(f1 / 80);
-        filt->f1.recalculateCoeffs();
+        filt1.setF0(f1);
+        filt1.setQ(f1 / 80);
+        filt1.recalculateCoeffs();
 
-        filt->f2.setF0(f2);
-        filt->f2.setQ(f2 / 80);
-        filt->f2.recalculateCoeffs();
+        filt2.setF0(f2);
+        filt2.setQ(f2 / 80);
+        filt2.recalculateCoeffs();
 
-        filt->f3.setF0(f3);
-        filt->f3.setQ(f3 / 80);
-        filt->f3.recalculateCoeffs();
+        filt3.setF0(f3);
+        filt3.setQ(f3 / 80);
+        filt3.recalculateCoeffs();
 
-        result += filt->f1.process(in, Biquad::LEFT);
-        result += filt->f2.process(in, Biquad::LEFT);
-        result += filt->f3.process(in, Biquad::LEFT) * 0.2;
+        result += filt1.process(in, Biquad::LEFT);
+        result += filt2.process(in, Biquad::LEFT);
+        result += filt3.process(in, Biquad::LEFT) * 0.2;
     }
     // occluding
     else

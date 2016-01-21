@@ -115,9 +115,16 @@ void Synthesizer::phoneme_transition()
         is_vowel = false;
 
         current_consonant = get_consonant_formants(ch - 100);
-        Vowel next_vowel = get_vowel_formants(phonemes[phoneme_idx + 1]);
 
-        current_consonant->init(filt, next_vowel);
+        Vowel next_vowel = {};
+
+        // if next is a vowel
+        if((size_t)phoneme_idx < phonemes.size() - 1 && phonemes[phoneme_idx + 1] < 100)
+        {
+            next_vowel = get_vowel_formants(phonemes[phoneme_idx + 1]);
+        }
+
+        current_consonant->init(next_vowel);
 
         duration = current_consonant->duration;
     }

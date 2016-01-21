@@ -37,6 +37,8 @@ int main(int argc, char *argv[])
 
         if(in.empty()) break;
 
+        in.push_back(119);
+
         for(size_t i = 0; i < in.size(); i++)
         {
             std::cout << in[i] << std::endl;
@@ -63,7 +65,7 @@ int main(int argc, char *argv[])
 
         if(use_sound)
         {
-            soundio.play_sound(&out[0], out.size());
+            soundio.play_sound(out);
         }
     }
 

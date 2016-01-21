@@ -3,12 +3,12 @@
 
 ////////////////////////////////////////
 //
-//  ㅂ : Bieup
+//  ㅃ : Ssangbieup
 //
 ////////////////////////////////////////
 
-Bieup::Bieup()
-: Consonant(20, 800, 0.02 + 0.020)
+Ssangbieup::Ssangbieup()
+: Consonant(20, 800, 0.02 + 0.009)
 {
     closure_duration = 0.02;
 
@@ -19,7 +19,7 @@ Bieup::Bieup()
     filt3 = Biquad(Biquad::BPF_CONSTANT_SKIRT, Fs);
 }
 
-void Bieup::init(const Vowel & next_vowel)
+void Ssangbieup::init(const Vowel & next_vowel)
 {
     s1 = f1;
     s2 = f2;
@@ -38,7 +38,7 @@ void Bieup::init(const Vowel & next_vowel)
 
 }
 
-fpoint Bieup::gen_sample(fpoint progress_sec)
+fpoint Ssangbieup::gen_sample(fpoint progress_sec)
 {
     fpoint result = 0;
 
@@ -48,7 +48,7 @@ fpoint Bieup::gen_sample(fpoint progress_sec)
         occluding = false;
         bursting = true;
 
-        burst_level = 0.2;
+        burst_level = 0.3;
     }
     // aspiration
     else if(progress_sec > closure_duration)

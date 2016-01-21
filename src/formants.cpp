@@ -94,6 +94,8 @@ const Vowel vowel_formants[] = {
     {344, 2814, 3471, 344, 2814, 3471}
 };
 
+Consonant *null_consonant = new Consonant();
+
 Consonant *consonant_formants[] = {
     // 0. ㄱ
     new Consonant(),
@@ -112,9 +114,9 @@ Consonant *consonant_formants[] = {
     // 7. ㅂ
     new Bieup(),
     // 8. ㅃ
-    new Consonant(),
+    new Ssangbieup(),
     // 9. ㅅ
-    new Consonant(),
+    new Siot(),
     // 10. ㅆ
     new Consonant(),
     // 11. ㅇ
@@ -132,10 +134,10 @@ Consonant *consonant_formants[] = {
     // 17. ㅍ
     new Pieup(),
     // 18. ㅎ
-    new Consonant()
+    new Consonant(),
+    // 19. null
+    null_consonant
 };
-// ieung
-Consonant * null_consonant = new Consonant();
 
 const Vowel & get_vowel_formants(int i)
 {

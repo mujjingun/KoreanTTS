@@ -55,17 +55,17 @@ int SoundIO::init_sound(int channels)
     return 0;
 }
 
-int SoundIO::play_sound(float* data, int N)
+int SoundIO::play_sound(std::vector<float> data)
 {
     PaError err;
     int floats_per_frame = FRAMES_PER_BUFFER * channels;
-    for(int i = 0; i + floats_per_frame < N; i += floats_per_frame)
+    for(unsigned i = 0; i < data.size(); i += floats_per_frame)
     {
         err = Pa_WriteStream( stream, &data[i], FRAMES_PER_BUFFER );
         if( err != paNoError ) return 1;
     }
 
-    sf_write_float(file, data, N);
+    sf_write_float(file, &data[0], data.size());
 
     return 0;
 }
