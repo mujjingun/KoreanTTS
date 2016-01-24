@@ -1,6 +1,7 @@
 #ifndef FORMANTS_H_INCLUDED
 #define FORMANTS_H_INCLUDED
 
+#include <memory>
 #include "main.h"
 #include "biquad.h"
 
@@ -30,11 +31,17 @@ public:
     virtual fpoint gen_sample(fpoint progress_sec){return 0;};
 };
 
+class Consonants
+{
+public:
+    Consonants();
+    Consonant* get(int i);
+private:
+    std::unique_ptr<Consonant> consonant_formants[20];
+};
+
 const Vowel & get_vowel_formants(int i);
-Consonant * get_consonant_formants(int i);
 fpoint linear(fpoint s, fpoint e, fpoint x, fpoint sx, fpoint ex);
 fpoint clamp(fpoint s, fpoint e, fpoint x);
-
-extern Consonant* null_consonant;
 
 #endif // FORMANTS_H_INCLUDED

@@ -4,6 +4,53 @@
 #include "main.h"
 #include "formants.h"
 
+// 0. ㄱ
+class Giyeok : public Consonant
+{
+public:
+    Giyeok();
+    virtual void init(const Vowel & next_vowel);
+    virtual fpoint gen_sample(fpoint progress_sec);
+
+private:
+    fpoint closure_duration;
+    fpoint s1, s2, s3;
+    fpoint e1, e2, e3;
+
+    fpoint aspiration_level;
+    fpoint noise_level;
+    fpoint burst_level;
+
+    bool occluding, bursting1, bursting2, aspirating;
+
+    Biquad burst_filt;
+    Biquad filt1, filt2, filt3;
+};
+
+// 3. ㄷ
+class Digeut : public Consonant
+{
+public:
+    Digeut();
+    virtual void init(const Vowel & next_vowel);
+    virtual fpoint gen_sample(fpoint progress_sec);
+
+private:
+    fpoint closure_duration;
+    fpoint s1, s2, s3;
+    fpoint e1, e2, e3;
+
+    fpoint aspiration_level;
+    fpoint noise_level;
+    fpoint burst_level;
+
+    bool occluding, bursting, aspirating;
+
+    Biquad burst_filt;
+    Biquad filt1, filt2, filt3;
+};
+
+// 7. ㅂ
 class Bieup : public Consonant
 {
 public:
@@ -26,6 +73,7 @@ private:
     Biquad filt1, filt2, filt3;
 };
 
+// 8. ㅃ
 class Ssangbieup : public Consonant
 {
 public:
@@ -48,6 +96,7 @@ private:
     Biquad filt1, filt2, filt3;
 };
 
+// 9. ㅅ
 class Siot : public Consonant
 {
 public:
@@ -59,6 +108,7 @@ private:
     Biquad hpf;
 };
 
+// 17.
 class Pieup : public Consonant
 {
 public:

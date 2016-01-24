@@ -53,6 +53,7 @@ private:
     fpoint s1, s2, s3;
     fpoint e1, e2, e3;
 
+    Consonants consonants;
     Consonant *current_consonant;
 
     bool is_prev_consonant, is_prev_vowel, is_next;

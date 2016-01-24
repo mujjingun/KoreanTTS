@@ -2,53 +2,6 @@
 #include "formants.h"
 #include "consonants.h"
 
-/*
-Vowel* formantsMale[] = {
-    // 0. ㅏ
-    new Monophthong(738, 1372, 2573),
-    // 1. ㅐ
-    new Monophthong(591, 1849, 2597),
-    // 2. ㅑ
-    new Diphthong(20, 0),
-    // 3. ㅒ
-    new Diphthong(20, 1),
-    // 4. ㅓ
-    new Monophthong(608, 1121, 2683),
-    // 5. ㅔ
-    new Monophthong(490, 1968, 2644),
-    // 6. ㅕ
-    new Diphthong(20, 4),
-    // 7. ㅖ
-    new Diphthong(20, 5),
-    // 8. ㅗ
-    new Monophthong(453, 945, 2674),
-    // 9. ㅘ
-    new Diphthong(8, 0),
-    // 10. ㅙ
-    new Diphthong(8, 1),
-    // 11. ㅚ
-    new Diphthong(13, 5),
-    // 12. ㅛ
-    new Diphthong(20, 8),
-    // 13. ㅜ
-    new Monophthong(369, 981, 2565),
-    // 14. ㅝ
-    new Diphthong(13, 4),
-    // 15. ㅞ
-    new Diphthong(13, 5),
-    // 16. ㅟ
-    new Diphthong(13, 20),
-    // 17. ㅠ
-    new Diphthong(20, 13),
-    // 18. ㅡ
-    new Monophthong(405, 1488, 2497),
-    // 19. ㅢ
-    new Diphthong(18, 20),
-    // 20. ㅣ
-    new Monophthong(342, 2219, 3047)
-};
-*/
-
 const Vowel vowel_formants[] = {
     // 0. ㅏ
     {986, 1794, 2957, 986, 1794, 2957},
@@ -71,13 +24,13 @@ const Vowel vowel_formants[] = {
     // 9. ㅘ
     {499, 1029, 3068, 986, 1794, 2957},
     // 10. ㅙ
-    {499, 1029, 3068, 677, 2285, 3063},
+    {360, 1021, 3068, 677, 2285, 3063},
     // 11. ㅚ (=ㅞ)
     {422, 1021, 3024, 650, 2377, 3068},
     // 12. ㅛ
     {344, 2814, 3471, 499, 1029, 3068},
     // 13. ㅜ
-    {360, 1000, 3024, 380, 1021, 3024},
+    {360, 1000, 3024, 360, 1021, 3024},
     // 14. ㅝ
     {422, 1021, 3024, 765, 1371, 3009},
     // 15. ㅞ
@@ -94,59 +47,58 @@ const Vowel vowel_formants[] = {
     {344, 2814, 3471, 344, 2814, 3471}
 };
 
-Consonant *null_consonant = new Consonant();
-
-Consonant *consonant_formants[] = {
+Consonants::Consonants()
+: consonant_formants {
     // 0. ㄱ
-    new Consonant(),
+    std::unique_ptr<Giyeok>(),
     // 1. ㄲ
-    new Consonant(),
+    std::unique_ptr<Consonant>(),
     // 2. ㄴ
-    new Consonant(),
+    std::unique_ptr<Consonant>(),
     // 3. ㄷ
-    new Consonant(),
+    std::unique_ptr<Digeut>(),
     // 4. ㄸ
-    new Consonant(),
+    std::unique_ptr<Consonant>(),
     // 5. ㄹ
-    new Consonant(),
+    std::unique_ptr<Consonant>(),
     // 6. ㅁ
-    new Consonant(),
+    std::unique_ptr<Consonant>(),
     // 7. ㅂ
-    new Bieup(),
+    std::unique_ptr<Bieup>(),
     // 8. ㅃ
-    new Ssangbieup(),
+    std::unique_ptr<Ssangbieup>(),
     // 9. ㅅ
-    new Siot(),
+    std::unique_ptr<Siot>(),
     // 10. ㅆ
-    new Consonant(),
+    std::unique_ptr<Consonant>(),
     // 11. ㅇ
-    new Consonant(),
+    std::unique_ptr<Consonant>(),
     // 12. ㅈ
-    new Consonant(),
+    std::unique_ptr<Consonant>(),
     // 13. ㅉ
-    new Consonant(),
+    std::unique_ptr<Consonant>(),
     // 14. ㅊ
-    new Consonant(),
+    std::unique_ptr<Consonant>(),
     // 15. ㅋ
-    new Consonant(),
+    std::unique_ptr<Consonant>(),
     // 16. ㅌ
-    new Consonant(),
+    std::unique_ptr<Consonant>(),
     // 17. ㅍ
-    new Pieup(),
+    std::unique_ptr<Pieup>(),
     // 18. ㅎ
-    new Consonant(),
+    std::unique_ptr<Consonant>(),
     // 19. null
-    null_consonant
-};
+    std::unique_ptr<Consonant>()
+} {}
+
+Consonant * Consonants::get(int i)
+{
+    return consonant_formants[i].get();
+}
 
 const Vowel & get_vowel_formants(int i)
 {
     return vowel_formants[i];
-}
-
-Consonant * get_consonant_formants(int i)
-{
-    return consonant_formants[i];
 }
 
 fpoint clamp(fpoint s, fpoint e, fpoint x)

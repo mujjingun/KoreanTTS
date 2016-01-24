@@ -16,7 +16,7 @@ Synthesizer::Synthesizer()
 
     noise_filt = Biquad(Biquad::LPF, Fs);
 
-    current_consonant = null_consonant;
+    current_consonant = consonants.get(19);
 }
 
 void Synthesizer::start(std::vector<int> const& phonemes)
@@ -78,7 +78,7 @@ void Synthesizer::phoneme_transition()
                 is_prev_consonant = true;
                 is_prev_vowel = false;
 
-                Consonant &prev_consonant = *get_consonant_formants(prev_ch - 100);
+                Consonant &prev_consonant = *consonants.get(prev_ch - 100);
                 prev1 = prev_consonant.f1;
                 prev2 = prev_consonant.f2;
                 prev3 = vowel.s3;
@@ -114,7 +114,7 @@ void Synthesizer::phoneme_transition()
     {
         is_vowel = false;
 
-        current_consonant = get_consonant_formants(ch - 100);
+        current_consonant = consonants.get(ch - 100);
 
         Vowel next_vowel = {};
 
@@ -162,9 +162,9 @@ int Synthesizer::update_params()
 
         if(is_prev_consonant)
         {
-            f1 = linear(prev1, f1, progress_sec, -0.6, 0.1);
-            f2 = linear(prev2, f2, progress_sec, -0.6, 0.1);
-            f3 = linear(prev3, f3, progress_sec, -0.6, 0.1);
+            f1 = linear(prev1, f1, progress_sec, -current_consonant->duration - 0.3, 0.1);
+            f2 = linear(prev2, f2, progress_sec, -current_consonant->duration - 0.3, 0.1);
+            f3 = linear(prev3, f3, progress_sec, -current_consonant->duration - 0.3, 0.1);
         }
 
         if(is_next)
@@ -180,7 +180,7 @@ int Synthesizer::update_params()
         }
         else
         {
-            voice_level = linear(voice_level_start, voice_level_end, progress_sec, 0, 0.01);
+            voice_level = linear(voice_level_start, voice_level_end, progress_sec, 0, 0.005);
         }
 
         if(!is_next)
@@ -204,12 +204,12 @@ fpoint Synthesizer::generate_sample()
 
     fpoint result = 0;
 
-    fpoint in = gen_signal(290 - sin(progress_sec * 10) * 50, voice_level, noise_level);
+    fpoint in = gen_signal(270 - sin(progress_sec * 10) * 50, voice_level, noise_level);
 
     if(is_vowel)
     {
         filt.f1.setF0(f1);
-        filt.f1.setQ(f1 / 40);
+        filt.f1.setQ(f1 / 80);
         filt.f1.recalculateCoeffs();
 
         filt.f2.setF0(f2);
@@ -234,7 +234,7 @@ fpoint Synthesizer::generate_sample()
         fpoint v4 = filt.f4.process(in, Biquad::LEFT);
         fpoint v5 = filt.f5.process(in, Biquad::LEFT);
 
-        fpoint add = (v1 * 1.3 + v2 + v3 + v4 * 0.1 + v5 * 0.1) / 10;
+        fpoint add = (v1 + v2 + v3 + v4 * 0.1 + v5 * 0.1) / 10;
 
         result += add;
     }
