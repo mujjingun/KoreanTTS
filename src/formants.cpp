@@ -47,48 +47,50 @@ const Vowel vowel_formants[] = {
     {344, 2814, 3471, 344, 2814, 3471}
 };
 
+#define UNIQUE(x) std::unique_ptr<x>(new x)
+
 Consonants::Consonants()
 : consonant_formants {
     // 0. ㄱ
-    std::unique_ptr<Giyeok>(),
+    UNIQUE(Giyeok),
     // 1. ㄲ
-    std::unique_ptr<Consonant>(),
+    UNIQUE(Consonant),
     // 2. ㄴ
-    std::unique_ptr<Consonant>(),
+    UNIQUE(Consonant),
     // 3. ㄷ
-    std::unique_ptr<Digeut>(),
+    UNIQUE(Digeut),
     // 4. ㄸ
-    std::unique_ptr<Consonant>(),
+    UNIQUE(Consonant),
     // 5. ㄹ
-    std::unique_ptr<Consonant>(),
+    UNIQUE(Consonant),
     // 6. ㅁ
-    std::unique_ptr<Consonant>(),
+    UNIQUE(Consonant),
     // 7. ㅂ
-    std::unique_ptr<Bieup>(),
+    UNIQUE(Bieup),
     // 8. ㅃ
-    std::unique_ptr<Ssangbieup>(),
+    UNIQUE(Ssangbieup),
     // 9. ㅅ
-    std::unique_ptr<Siot>(),
+    UNIQUE(Siot),
     // 10. ㅆ
-    std::unique_ptr<Consonant>(),
+    UNIQUE(Consonant),
     // 11. ㅇ
-    std::unique_ptr<Consonant>(),
+    UNIQUE(Consonant),
     // 12. ㅈ
-    std::unique_ptr<Consonant>(),
+    UNIQUE(Consonant),
     // 13. ㅉ
-    std::unique_ptr<Consonant>(),
+    UNIQUE(Consonant),
     // 14. ㅊ
-    std::unique_ptr<Consonant>(),
+    UNIQUE(Consonant),
     // 15. ㅋ
-    std::unique_ptr<Consonant>(),
+    UNIQUE(Consonant),
     // 16. ㅌ
-    std::unique_ptr<Consonant>(),
+    UNIQUE(Consonant),
     // 17. ㅍ
-    std::unique_ptr<Pieup>(),
+    UNIQUE(Pieup),
     // 18. ㅎ
-    std::unique_ptr<Consonant>(),
+    UNIQUE(Consonant),
     // 19. null
-    std::unique_ptr<Consonant>()
+    UNIQUE(Consonant),
 } {}
 
 Consonant * Consonants::get(int i)
