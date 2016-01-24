@@ -67,6 +67,7 @@ private:
     fpoint noise_level;
 
     fpoint duration;
+    fpoint sec;
     fpoint progress_sec;
     fpoint last_vowel_sec;
 

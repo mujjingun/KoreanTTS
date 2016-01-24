@@ -10,7 +10,7 @@ class Giyeok : public Consonant
 public:
     Giyeok();
     virtual void init(const Vowel & next_vowel);
-    virtual fpoint gen_sample(fpoint progress_sec);
+    virtual fpoint gen_sample(fpoint progress_sec, fpoint voice);
 
 private:
     fpoint closure_duration;
@@ -27,13 +27,25 @@ private:
     Biquad filt1, filt2, filt3;
 };
 
+// 2. ㄴ
+class Nieun : public Consonant
+{
+public:
+    Nieun();
+    virtual void init(const Vowel & next_vowel);
+    virtual fpoint gen_sample(fpoint progress_sec, fpoint voice);
+
+private:
+    Biquad filt1, filt2, filt3;
+};
+
 // 3. ㄷ
 class Digeut : public Consonant
 {
 public:
     Digeut();
     virtual void init(const Vowel & next_vowel);
-    virtual fpoint gen_sample(fpoint progress_sec);
+    virtual fpoint gen_sample(fpoint progress_sec, fpoint voice);
 
 private:
     fpoint closure_duration;
@@ -50,13 +62,25 @@ private:
     Biquad filt1, filt2, filt3;
 };
 
+// 6. ㅁ
+class Mieum : public Consonant
+{
+public:
+    Mieum();
+    virtual void init(const Vowel & next_vowel);
+    virtual fpoint gen_sample(fpoint progress_sec, fpoint voice);
+
+private:
+    Biquad filt1, filt2, filt3;
+};
+
 // 7. ㅂ
 class Bieup : public Consonant
 {
 public:
     Bieup();
     virtual void init(const Vowel & next_vowel);
-    virtual fpoint gen_sample(fpoint progress_sec);
+    virtual fpoint gen_sample(fpoint progress_sec, fpoint voice);
 
 private:
     fpoint closure_duration;
@@ -79,7 +103,7 @@ class Ssangbieup : public Consonant
 public:
     Ssangbieup();
     virtual void init(const Vowel & next_vowel);
-    virtual fpoint gen_sample(fpoint progress_sec);
+    virtual fpoint gen_sample(fpoint progress_sec, fpoint voice);
 
 private:
     fpoint closure_duration;
@@ -102,7 +126,7 @@ class Siot : public Consonant
 public:
     Siot();
     virtual void init(const Vowel & next_vowel);
-    virtual fpoint gen_sample(fpoint progress_sec);
+    virtual fpoint gen_sample(fpoint progress_sec, fpoint voice);
 
 private:
     Biquad hpf;
@@ -114,7 +138,7 @@ class Pieup : public Consonant
 public:
     Pieup();
     virtual void init(const Vowel & next_vowel);
-    virtual fpoint gen_sample(fpoint progress_sec);
+    virtual fpoint gen_sample(fpoint progress_sec, fpoint voice);
 
 private:
     fpoint closure_duration;

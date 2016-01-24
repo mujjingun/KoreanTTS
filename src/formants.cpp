@@ -56,7 +56,7 @@ Consonants::Consonants()
     // 1. ㄲ
     UNIQUE(Consonant),
     // 2. ㄴ
-    UNIQUE(Consonant),
+    UNIQUE(Nieun),
     // 3. ㄷ
     UNIQUE(Digeut),
     // 4. ㄸ
@@ -64,7 +64,7 @@ Consonants::Consonants()
     // 5. ㄹ
     UNIQUE(Consonant),
     // 6. ㅁ
-    UNIQUE(Consonant),
+    UNIQUE(Mieum),
     // 7. ㅂ
     UNIQUE(Bieup),
     // 8. ㅃ

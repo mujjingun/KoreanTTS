@@ -38,7 +38,7 @@ void Giyeok::init(const Vowel & next_vowel)
 
 }
 
-fpoint Giyeok::gen_sample(fpoint progress_sec)
+fpoint Giyeok::gen_sample(fpoint progress_sec, fpoint voice)
 {
     fpoint result = 0;
 

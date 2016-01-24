@@ -38,7 +38,7 @@ void Bieup::init(const Vowel & next_vowel)
 
 }
 
-fpoint Bieup::gen_sample(fpoint progress_sec)
+fpoint Bieup::gen_sample(fpoint progress_sec, fpoint voice)
 {
     fpoint result = 0;
 

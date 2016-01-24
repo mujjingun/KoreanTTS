@@ -142,7 +142,7 @@ void Synthesizer::phoneme_transition()
 
 int Synthesizer::update_params()
 {
-    fpoint sec = fpoint(sample_idx) / Fs;
+    sec = fpoint(sample_idx) / Fs;
     progress_sec = sec - last_vowel_sec;
 
     if(phoneme_idx < 0 || progress_sec > duration)
@@ -169,9 +169,9 @@ int Synthesizer::update_params()
 
         if(is_next)
         {
-            f1 = linear(f1, next1, progress_sec, duration - 0.05, duration);
-            f2 = linear(f2, next2, progress_sec, duration - 0.05, duration);
-            f3 = linear(f3, next3, progress_sec, duration - 0.05, duration);
+            f1 = linear(f1, next1, progress_sec, duration - 0.1, duration);
+            f2 = linear(f2, next2, progress_sec, duration - 0.1, duration);
+            f3 = linear(f3, next3, progress_sec, duration - 0.1, duration);
         }
 
         if(is_prev_vowel)
@@ -187,6 +187,10 @@ int Synthesizer::update_params()
         {
             voice_level = linear(voice_level, 0, progress_sec, duration - 0.15, duration);
         }
+    }
+    else
+    {
+        voice_level = 1;
     }
 
     return -1;
@@ -204,12 +208,12 @@ fpoint Synthesizer::generate_sample()
 
     fpoint result = 0;
 
-    fpoint in = gen_signal(270 - sin(progress_sec * 10) * 50, voice_level, noise_level);
+    fpoint in = gen_signal(220 - sin(sec * 5) * 20, voice_level, noise_level);
 
     if(is_vowel)
     {
         filt.f1.setF0(f1);
-        filt.f1.setQ(f1 / 80);
+        filt.f1.setQ(f1 / 50);
         filt.f1.recalculateCoeffs();
 
         filt.f2.setF0(f2);
@@ -234,16 +238,16 @@ fpoint Synthesizer::generate_sample()
         fpoint v4 = filt.f4.process(in, Biquad::LEFT);
         fpoint v5 = filt.f5.process(in, Biquad::LEFT);
 
-        fpoint add = (v1 + v2 + v3 + v4 * 0.1 + v5 * 0.1) / 10;
+        fpoint add = (v1 * 3 + v2 + v3 + v4 * 0.5 + v5 * 0.3) / 20;
 
         result += add;
     }
     else
     {
-        result += current_consonant->gen_sample(progress_sec);
+        result += current_consonant->gen_sample(progress_sec, in);
     }
 
-    return result;
+    return clamp(-1, 1, result);
 }
 
 fpoint Synthesizer::gen_signal(fpoint freq, fpoint voice_level, fpoint noise_level)

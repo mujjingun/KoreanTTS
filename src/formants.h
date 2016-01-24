@@ -28,7 +28,7 @@ public:
     Consonant& operator=(const Consonant&) = delete;
 
     virtual void init(const Vowel & next_vowel){};
-    virtual fpoint gen_sample(fpoint progress_sec){return 0;};
+    virtual fpoint gen_sample(fpoint progress_sec, fpoint voice){return 0;};
 };
 
 class Consonants

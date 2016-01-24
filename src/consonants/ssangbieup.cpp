@@ -38,7 +38,7 @@ void Ssangbieup::init(const Vowel & next_vowel)
 
 }
 
-fpoint Ssangbieup::gen_sample(fpoint progress_sec)
+fpoint Ssangbieup::gen_sample(fpoint progress_sec, fpoint voice)
 {
     fpoint result = 0;
 

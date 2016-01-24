@@ -38,7 +38,7 @@ void Pieup::init(const Vowel & next_vowel)
 
 }
 
-fpoint Pieup::gen_sample(fpoint progress_sec)
+fpoint Pieup::gen_sample(fpoint progress_sec, fpoint voice)
 {
     fpoint result = 0;
 
@@ -61,6 +61,7 @@ fpoint Pieup::gen_sample(fpoint progress_sec)
         burst_level = 0;
 
         noise_level = linear(0, aspiration_level, progress_sec, closure_duration, duration);
+        noise_level = linear(noise_level, 0, progress_sec, duration - 0.02, duration);
 
         f1 = linear(s1, e1, progress_sec, -0.3, duration);
         f2 = linear(s2, e2, progress_sec, -0.3, duration);

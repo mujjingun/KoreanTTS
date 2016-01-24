@@ -38,7 +38,7 @@ void Digeut::init(const Vowel & next_vowel)
 
 }
 
-fpoint Digeut::gen_sample(fpoint progress_sec)
+fpoint Digeut::gen_sample(fpoint progress_sec, fpoint voice)
 {
     fpoint result = 0;
 

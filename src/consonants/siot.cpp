@@ -17,7 +17,7 @@ void Siot::init(const Vowel & next_vowel)
 {
 }
 
-fpoint Siot::gen_sample(fpoint progress_sec)
+fpoint Siot::gen_sample(fpoint progress_sec, fpoint voice)
 {
     fpoint result = 0;
 
