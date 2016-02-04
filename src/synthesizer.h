@@ -22,14 +22,15 @@ protected:
     fpoint noise();
 
 private:
+    std::vector<int> phonemes;
+    signal_t samples;
+
     int sample_idx;
     int phoneme_idx;
-    bool is_vowel;
     bool finished;
-    std::vector<int> phonemes;
 
-    fpoint last_vowel_sec;
-    fpoint sec;
+    fpoint last_phoneme_sec;
+    fpoint last_phoneme_sample_idx;
     fpoint progress_sec;
     fpoint duration;
 };

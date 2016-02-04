@@ -2,7 +2,6 @@
 #define ENCODING_H_INCLUDED
 
 #include "main.h"
-#include <vector>
 #include <string>
 
 std::wstring console_input();

@@ -1,5 +1,5 @@
-#ifndef __biquad_h__
-#define __biquad_h__
+#ifndef biquad_h
+#define biquad_h
 
 #include "main.h"
 
@@ -33,7 +33,7 @@ public:
         RIGHT
     };
 
-    Biquad() {};
+    Biquad();
     Biquad(int type, fpoint sampleRate);
 
     void recalculateCoeffs();

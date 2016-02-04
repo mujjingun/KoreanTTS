@@ -4,28 +4,21 @@
 
 const fpoint M_PI = fpoint(3.1415926535897932384626);
 
+Biquad::Biquad()
+: sampleRate(16000), type(LPF), paramType(PARAM_Q),
+x_1_l(0), x_2_l(0), y_1_l(0), y_2_l(0),
+x_1_r(0), x_2_r(0), y_1_r(0), y_2_r(0),
+b0(1), a0(1), b1(0), a1(0), b2(0), a2(0),
+b0a0(b0 / a0), b1a0(b1 / a0), b2a0(b2 / a0),
+a1a0(a1 / a0), a2a0(a2 / a0),
+f0(3000), dBgain(12), Q(1), BW(-3), S(1)
+{}
+
 Biquad::Biquad(int filterType, fpoint rate)
+:Biquad()
 {
 	sampleRate = rate;
 	type = filterType;
-	paramType = PARAM_Q;
-	x_1_l = x_2_l = 0;
-	y_1_l = y_2_l = 0;
-	x_1_r = x_2_r = 0;
-	y_1_r = y_2_r = 0;
-	b0 = a0 = 1;
-	b1 = a1 = 0;
-	b2 = a2 = 0;
-	b0a0 = b0 / a0;
-	b1a0 = b1 / a0;
-	b2a0 = b2 / a0;
-	a1a0 = a1 / a0;
-	a2a0 = a2 / a0;
-	f0 = 3000;
-	dBgain = 12;
-	Q = 1;
-	BW = -3;
-	S = 1;
 }
 
 void Biquad::reset()

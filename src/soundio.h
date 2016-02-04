@@ -21,8 +21,12 @@ private:
 
 public:
 
-    SoundIO() {};
-    virtual ~SoundIO() {};
+    SoundIO()
+    : stream(nullptr), file(nullptr), channels(1)
+    {};
+
+    SoundIO(const SoundIO&) = delete;
+    SoundIO operator=(const SoundIO&) = delete;
 
     int init_sound(int channels);
     int play_sound(std::vector<float> data);
@@ -30,6 +34,6 @@ public:
 
 };
 
-std::vector<fpoint> get_samples_from_file(std::string filename);
+signal_t get_samples_from_file(std::string filename);
 
 #endif // SOUNDIO_H_INCLUDED

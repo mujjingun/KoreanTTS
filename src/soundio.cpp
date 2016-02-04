@@ -1,4 +1,4 @@
-#include <cstdio>
+#include <iostream>
 #include <algorithm>
 #include <cstdint>
 
@@ -15,7 +15,8 @@ int SoundIO::init_sound(int achannels)
     // initialize audio
     err = Pa_Initialize();
     if( err != paNoError ) return 1;
-    puts("Initialized");
+
+    std::cout << "Initialized Portaudio." << std::endl;
 
     outputParameters.device = Pa_GetDefaultOutputDevice(); /* default output device */
 
@@ -37,7 +38,7 @@ int SoundIO::init_sound(int achannels)
 
     err = Pa_StartStream( stream );
     if( err != paNoError ) return 1;
-    puts("Stream Opened");
+    std::cout << "Stream Opened" << std::endl;
 
 
     //////////////////////////
@@ -50,7 +51,7 @@ int SoundIO::init_sound(int achannels)
 
     file = sf_open("sound.wav", SFM_WRITE, &sfinfo);
 
-    puts("File Opened");
+    std::cout << "File Opened" << std::endl;
 
     return 0;
 }
@@ -75,22 +76,22 @@ int SoundIO::end_sound()
     PaError err;
     err = Pa_StopStream( stream );
     if( err != paNoError ) return 1;
-    puts("Stream Stopped");
+    std::cout << "Stream Stopped" << std::endl;
 
     Pa_Terminate();
 
     sf_write_sync(file);
     sf_close(file);
-    puts("File Closed");
+    std::cout << "File Closed" << std::endl;
 
     return 0;
 }
 
-std::vector<fpoint> get_samples_from_file(std::string filename)
+signal_t get_samples_from_file(std::string filename)
 {
     const int BUFFER_LEN = 1024;
     static float data[BUFFER_LEN];
-    std::vector<fpoint> out;
+    signal_t out;
 
     SNDFILE *infile;
     SF_INFO sfinfo;
@@ -100,10 +101,13 @@ std::vector<fpoint> get_samples_from_file(std::string filename)
 
     int readcount;
 
+    filename.insert(0, "samples/");
+    filename.append(".wav");
+
     if (! (infile = sf_open(filename.c_str(), SFM_READ, &sfinfo)))
     {
-        /* Print the error message fron libsndfile. */
-        sf_perror (nullptr);
+        std::cout << "no file named " << filename << std::endl;
+        return out;
     }
 
     while ((readcount = sf_read_float(infile, data, BUFFER_LEN)))

@@ -39,9 +39,16 @@ int console_input ( std::wstring & str )
 std::vector<int> decompose( std::wstring const & str )
 {
     std::vector<int> out;
-    for(unsigned i = 0; i < str.length(); i++)
+    out.push_back(0);
+
+    for(wchar_t ch : str)
     {
-        int code = str[i] - FIRST_HANGUL_UNICODE;
+        if(ch == ' ')
+        {
+            out.push_back(0);
+        }
+
+        int code = ch - FIRST_HANGUL_UNICODE;
 
         if(code < 0 || code > LAST_HANGUL_UNICODE - FIRST_HANGUL_UNICODE) continue;
 
@@ -51,11 +58,12 @@ std::vector<int> decompose( std::wstring const & str )
         code /= NUM_JUNGSUNGS;
         int cho = code;
 
-        if(cho != 11) // 'ㅇ'
-            out.push_back(cho + 100);
-        out.push_back(jung);
+        out.push_back(cho + 100);
+        out.push_back(jung + 200);
         if(jong != 0)
-            out.push_back(jong + 200);
+            out.push_back(jong + 300);
     }
+    out.push_back(0);
+
     return out;
 }

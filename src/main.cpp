@@ -1,12 +1,12 @@
 #include <iostream>
 #include <ctime>
 #include <string>
-#include <vector>
 
 #include "main.h"
 #include "soundio.h"
 #include "synthesizer.h"
 #include "encoding.h"
+#include "hangul.h"
 
 int main(int argc, char *argv[])
 {
@@ -28,18 +28,39 @@ int main(int argc, char *argv[])
     {
         out.clear();
 
+        // get console input
         std::cout << "input: ";
         std::wstring in_uni = console_input();
 
         // decompose the syllables into hangul jamo
         std::vector<int> in = decompose(in_uni);
 
-        if(in.empty()) break;
-
+        std::cout << "\ndecomposition" << std::endl;
         for(int i : in)
         {
-            std::cout << i << std::endl;
+            std::cout << i << ", ";
         }
+
+        // to phonetic hangul
+        in = to_phonetic(in);
+
+        std::cout << "\nphonetic" << std::endl;
+        for(int i : in)
+        {
+            std::cout << i << ", ";
+        }
+
+        // to narrow transcription
+        in = to_narrow(in);
+
+        std::cout << "\nnarrow" << std::endl;
+        for(int i : in)
+        {
+            std::cout << i << ", ";
+        }
+        std::cout << std::endl;
+
+        if(in.size() <= 2) break;
 
         start = clock();
 
@@ -62,6 +83,7 @@ int main(int argc, char *argv[])
 
         if(use_sound)
         {
+            std::cout << "playing sound.." << std::endl;
             soundio.play_sound(out);
         }
     }

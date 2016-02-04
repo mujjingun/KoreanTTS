@@ -8,5 +8,6 @@
 bin/
 obj/
 
-# audio files
+# audio files 
+*.mp3
 *.wav
