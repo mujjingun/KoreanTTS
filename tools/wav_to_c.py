@@ -11,4 +11,9 @@ frames = unpack(frames)
 
 frames = ['{0:.5f},'.format(s) for s in frames]
 
-print(''.join(frames))
+c = 0
+n = 7
+for s in (frames[i:i + n] for i in range(0, len(frames), n)):
+	print("".join(s))
+
+print(len(frames))

@@ -9,8 +9,8 @@ class Giyeok : public Consonant
 {
 public:
     Giyeok();
-    virtual void init(const Vowel & next_vowel);
-    virtual fpoint gen_sample(fpoint progress_sec, fpoint voice);
+    virtual void init(const Vowel & next_vowel) override;
+    virtual fpoint gen_sample(fpoint progress_sec, fpoint voice) override;
 
 private:
     fpoint closure_duration;
@@ -32,8 +32,8 @@ class Nieun : public Consonant
 {
 public:
     Nieun();
-    virtual void init(const Vowel & next_vowel);
-    virtual fpoint gen_sample(fpoint progress_sec, fpoint voice);
+    virtual void init(const Vowel & next_vowel) override;
+    virtual fpoint gen_sample(fpoint progress_sec, fpoint voice) override;
 
 private:
     Biquad filt1, filt2, filt3;
@@ -44,8 +44,8 @@ class Digeut : public Consonant
 {
 public:
     Digeut();
-    virtual void init(const Vowel & next_vowel);
-    virtual fpoint gen_sample(fpoint progress_sec, fpoint voice);
+    virtual void init(const Vowel & next_vowel) override;
+    virtual fpoint gen_sample(fpoint progress_sec, fpoint voice) override;
 
 private:
     fpoint closure_duration;
@@ -67,8 +67,8 @@ class Mieum : public Consonant
 {
 public:
     Mieum();
-    virtual void init(const Vowel & next_vowel);
-    virtual fpoint gen_sample(fpoint progress_sec, fpoint voice);
+    virtual void init(const Vowel & next_vowel) override;
+    virtual fpoint gen_sample(fpoint progress_sec, fpoint voice) override;
 
 private:
     Biquad filt1, filt2, filt3;
@@ -79,8 +79,8 @@ class Bieup : public Consonant
 {
 public:
     Bieup();
-    virtual void init(const Vowel & next_vowel);
-    virtual fpoint gen_sample(fpoint progress_sec, fpoint voice);
+    virtual void init(const Vowel & next_vowel) override;
+    virtual fpoint gen_sample(fpoint progress_sec, fpoint voice) override;
 
 private:
     fpoint closure_duration;
@@ -102,8 +102,8 @@ class Ssangbieup : public Consonant
 {
 public:
     Ssangbieup();
-    virtual void init(const Vowel & next_vowel);
-    virtual fpoint gen_sample(fpoint progress_sec, fpoint voice);
+    virtual void init(const Vowel & next_vowel) override;
+    virtual fpoint gen_sample(fpoint progress_sec, fpoint voice) override;
 
 private:
     fpoint closure_duration;
@@ -125,8 +125,8 @@ class Siot : public Consonant
 {
 public:
     Siot();
-    virtual void init(const Vowel & next_vowel);
-    virtual fpoint gen_sample(fpoint progress_sec, fpoint voice);
+    virtual void init(const Vowel & next_vowel) override;
+    virtual fpoint gen_sample(fpoint progress_sec, fpoint voice) override;
 
 private:
     Biquad hpf;
@@ -137,8 +137,8 @@ class Pieup : public Consonant
 {
 public:
     Pieup();
-    virtual void init(const Vowel & next_vowel);
-    virtual fpoint gen_sample(fpoint progress_sec, fpoint voice);
+    virtual void init(const Vowel & next_vowel) override;
+    virtual fpoint gen_sample(fpoint progress_sec, fpoint voice) override;
 
 private:
     fpoint closure_duration;

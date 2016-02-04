@@ -9,7 +9,7 @@
 ////////////////////////////////////////
 
 Nieun::Nieun()
-: Consonant(20, 800, 0.07)
+: Consonant(20, 800, 0.07, 0.3)
 {
     filt1 = Biquad(Biquad::BPF_CONSTANT_SKIRT, Fs);
     filt2 = Biquad(Biquad::BPF_CONSTANT_SKIRT, Fs);

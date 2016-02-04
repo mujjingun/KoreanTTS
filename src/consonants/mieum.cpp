@@ -8,7 +8,7 @@
 ////////////////////////////////////////
 
 Mieum::Mieum()
-: Consonant(20, 800, 0.12)
+: Consonant(240, 1125, 0.05, 0.6)
 {
     filt1 = Biquad(Biquad::BPF_CONSTANT_SKIRT, Fs);
     filt2 = Biquad(Biquad::BPF_CONSTANT_SKIRT, Fs);
@@ -26,12 +26,12 @@ fpoint Mieum::gen_sample(fpoint progress_sec, fpoint voice)
 {
     fpoint result = 0;
 
-    voice *= linear(0, 1, progress_sec, 0, duration);
+    voice *= linear(0, 0.05, progress_sec, 0, duration);
 
     fpoint f1, f2, f3;
 
     f1 = 246;
-    f2 = 1661;
+    f2 = linear(1661, 1400, progress_sec, 0, duration);
     f3 = 2626;
 
     filt1.setF0(f1);
@@ -46,9 +46,9 @@ fpoint Mieum::gen_sample(fpoint progress_sec, fpoint voice)
     filt3.setQ(f3 / 80);
     filt3.recalculateCoeffs();
 
-    result += filt1.process(voice, Biquad::LEFT) * 0.1;
-    result += filt2.process(voice, Biquad::LEFT) * 0.001;
-    result += filt3.process(voice, Biquad::LEFT) * 0.001;
+    result += filt1.process(voice, Biquad::LEFT);
+    result += filt2.process(voice, Biquad::LEFT) * 0.01;
+    result += filt3.process(voice, Biquad::LEFT) * 0.01;
 
     return result;
 }

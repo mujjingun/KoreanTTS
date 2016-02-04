@@ -15,12 +15,12 @@ class Consonant
 {
 public:
     fpoint f1, f2;
-    fpoint duration;
+    fpoint duration, transition;
 
-    Consonant(fpoint f1, fpoint f2, fpoint duration)
-    : f1(f1), f2(f2), duration(duration){};
+    Consonant(fpoint f1, fpoint f2, fpoint duration, fpoint transition)
+    : f1(f1), f2(f2), duration(duration), transition(transition){};
 
-    Consonant(): Consonant(0, 0, 0.1) {};
+    Consonant(): Consonant(0, 0, 0.1, 0.4) {};
 
     virtual ~Consonant(){}
 

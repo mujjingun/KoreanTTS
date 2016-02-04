@@ -97,6 +97,17 @@ void Synthesizer::phoneme_transition()
             next2 = next_vowel.s2;
             next3 = next_vowel.s3;
         }
+        else if((size_t)phoneme_idx < phonemes.size() - 1 && phonemes[phoneme_idx + 1] < 200 && phonemes[phoneme_idx + 1] != 119)
+        {
+            is_next = true;
+
+            int next_ch = phonemes[phoneme_idx + 1];
+
+            Consonant &next_consonant = *consonants.get(next_ch - 100);
+            next1 = next_consonant.f1;
+            next2 = next_consonant.f2;
+            next3 = vowel.e3;
+        }
         else
         {
             is_next = false;
@@ -162,9 +173,9 @@ int Synthesizer::update_params()
 
         if(is_prev_consonant)
         {
-            f1 = linear(prev1, f1, progress_sec, -current_consonant->duration - 0.3, 0.1);
-            f2 = linear(prev2, f2, progress_sec, -current_consonant->duration - 0.3, 0.1);
-            f3 = linear(prev3, f3, progress_sec, -current_consonant->duration - 0.3, 0.1);
+            f1 = linear(prev1, f1, progress_sec, -current_consonant->transition, 0.15);
+            f2 = linear(prev2, f2, progress_sec, -current_consonant->transition, 0.15);
+            f3 = linear(prev3, f3, progress_sec, -current_consonant->transition, 0.15);
         }
 
         if(is_next)
@@ -208,12 +219,12 @@ fpoint Synthesizer::generate_sample()
 
     fpoint result = 0;
 
-    fpoint in = gen_signal(220 - sin(sec * 5) * 20, voice_level, noise_level);
+    fpoint in = gen_signal(220 - sin(sec * 5) * 50, voice_level, noise_level);
 
     if(is_vowel)
     {
         filt.f1.setF0(f1);
-        filt.f1.setQ(f1 / 50);
+        filt.f1.setQ(f1 / 80);
         filt.f1.recalculateCoeffs();
 
         filt.f2.setF0(f2);
@@ -224,21 +235,21 @@ fpoint Synthesizer::generate_sample()
         filt.f3.setQ(f3 / 80);
         filt.f3.recalculateCoeffs();
 
-        filt.f4.setF0(4500);
-        filt.f4.setQ(4500.0 / 80);
+        filt.f4.setF0(4000);
+        filt.f4.setQ(4000.0 / 80);
         filt.f4.recalculateCoeffs();
 
-        filt.f5.setF0(5500);
-        filt.f5.setQ(5500.0 / 80);
+        filt.f5.setF0(5000);
+        filt.f5.setQ(5000.0 / 80);
         filt.f5.recalculateCoeffs();
 
         fpoint v1 = filt.f1.process(in, Biquad::LEFT);
-        fpoint v2 = filt.f2.process(in, Biquad::LEFT);
+        fpoint v2 = filt.f2.process(v1, Biquad::LEFT);
         fpoint v3 = filt.f3.process(in, Biquad::LEFT);
         fpoint v4 = filt.f4.process(in, Biquad::LEFT);
         fpoint v5 = filt.f5.process(in, Biquad::LEFT);
 
-        fpoint add = (v1 * 3 + v2 + v3 + v4 * 0.5 + v5 * 0.3) / 20;
+        fpoint add = (v1 + v2 + v3 + v4 * 0.1 + v5 * 0.01) / 20;
 
         result += add;
     }
@@ -268,7 +279,7 @@ fpoint Synthesizer::gen_signal(fpoint freq, fpoint voice_level, fpoint noise_lev
 
 fpoint Synthesizer::noise()
 {
-    noise_filt.setF0(5000);
+    noise_filt.setF0(400);
     noise_filt.setQ(1);
     noise_filt.recalculateCoeffs();
 

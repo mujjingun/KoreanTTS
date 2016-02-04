@@ -8,7 +8,7 @@
 ////////////////////////////////////////
 
 Siot::Siot()
-: Consonant(20, 1800, 0.1)
+: Consonant(20, 1800, 0.1, 0.4)
 {
     hpf = Biquad(Biquad::BPF_CONSTANT_SKIRT, Fs);
 }

@@ -8,7 +8,7 @@
 ////////////////////////////////////////
 
 Ssangbieup::Ssangbieup()
-: Consonant(20, 800, 0.02 + 0.009)
+: Consonant(20, 800, 0.02 + 0.009, 0.4)
 {
     closure_duration = 0.02;
 
