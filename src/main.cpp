@@ -29,19 +29,16 @@ int main(int argc, char *argv[])
         out.clear();
 
         std::cout << "input: ";
-        std::wstring in_uni;
-        in_uni = console_input();
+        std::wstring in_uni = console_input();
 
-        std::vector<int> in;
-        in = decompose(in_uni);
+        // decompose the syllables into hangul jamo
+        std::vector<int> in = decompose(in_uni);
 
         if(in.empty()) break;
 
-        in.push_back(119);
-
-        for(size_t i = 0; i < in.size(); i++)
+        for(int i : in)
         {
-            std::cout << in[i] << std::endl;
+            std::cout << i << std::endl;
         }
 
         start = clock();
@@ -60,7 +57,7 @@ int main(int argc, char *argv[])
         fpoint ft_rate = out.size() / ((finish - start) / (fpoint)CLOCKS_PER_SEC);
         std::cout << std::endl;
         std::cout << ft_rate << " samples per second." << std::endl;
-        std::cout << "lags " << Fs - ft_rate << "s per second" << std::endl;
+        std::cout << ft_rate / Fs << " times faster than real-time" << std::endl;
         std::cout << "out buffer size: " << out.size() * 16 << " bytes\n" << std::endl;
 
         if(use_sound)

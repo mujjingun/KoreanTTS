@@ -4,27 +4,6 @@
 #include <vector>
 
 #include "main.h"
-#include "biquad.h"
-#include "formants.h"
-
-class FormantFilters
-{
-public:
-    Biquad f1;
-    Biquad f2;
-    Biquad f3;
-    Biquad f4;
-    Biquad f5;
-
-    void reset()
-    {
-        f1.reset();
-        f2.reset();
-        f3.reset();
-        f4.reset();
-        f5.reset();
-    }
-};
 
 class Synthesizer
 {
@@ -49,33 +28,10 @@ private:
     bool finished;
     std::vector<int> phonemes;
 
-    fpoint f1, f2, f3;
-    fpoint s1, s2, s3;
-    fpoint e1, e2, e3;
-
-    Consonants consonants;
-    Consonant *current_consonant;
-
-    bool is_prev_consonant, is_prev_vowel, is_next;
-    fpoint prev1, prev2, prev3;
-    fpoint next1, next2, next3;
-
-    fpoint voice_level;
-    fpoint voice_level_start;
-    fpoint voice_level_end;
-
-    fpoint noise_level;
-
-    fpoint duration;
+    fpoint last_vowel_sec;
     fpoint sec;
     fpoint progress_sec;
-    fpoint last_vowel_sec;
-
-    fpoint last_period;
-
-    FormantFilters filt;
-
-    Biquad noise_filt;
+    fpoint duration;
 };
 
 #endif // SYNTHESIZER_H

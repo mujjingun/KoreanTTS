@@ -5,9 +5,9 @@
 #include "soundio.h"
 #include "main.h"
 
-int SoundIO::init_sound(int channels)
+int SoundIO::init_sound(int achannels)
 {
-    this->channels = channels;
+    this->channels = achannels;
 
     PaStreamParameters outputParameters;
     PaError err;
@@ -22,17 +22,17 @@ int SoundIO::init_sound(int channels)
     outputParameters.channelCount = channels;
     outputParameters.sampleFormat = paFloat32;
     outputParameters.suggestedLatency = Pa_GetDeviceInfo( outputParameters.device )->defaultLowOutputLatency;
-    outputParameters.hostApiSpecificStreamInfo = NULL;
+    outputParameters.hostApiSpecificStreamInfo = nullptr;
 
     err = Pa_OpenStream(
               &stream,
-              NULL, /* no input */
+              nullptr, /* no input */
               &outputParameters,
               Fs,
               FRAMES_PER_BUFFER,
               paClipOff,
-              NULL,
-              NULL );
+              nullptr,
+              nullptr );
     if( err != paNoError ) return 1;
 
     err = Pa_StartStream( stream );
@@ -86,7 +86,35 @@ int SoundIO::end_sound()
     return 0;
 }
 
-int16_t SoundIO::normalize(const fpoint& x)
+std::vector<fpoint> get_samples_from_file(std::string filename)
 {
-    return std::min(std::max(int(x * INT16_MAX), INT16_MIN), INT16_MAX);
+    const int BUFFER_LEN = 1024;
+    static float data[BUFFER_LEN];
+    std::vector<fpoint> out;
+
+    SNDFILE *infile;
+    SF_INFO sfinfo;
+    sfinfo.channels = 1;
+    sfinfo.samplerate = Fs;
+    sfinfo.format = SF_FORMAT_WAV | SF_FORMAT_FLOAT;
+
+    int readcount;
+
+    if (! (infile = sf_open(filename.c_str(), SFM_READ, &sfinfo)))
+    {
+        /* Print the error message fron libsndfile. */
+        sf_perror (nullptr);
+    }
+
+    while ((readcount = sf_read_float(infile, data, BUFFER_LEN)))
+    {
+        for(int i = 0; i < readcount; ++i)
+        {
+            out.push_back(data[i]);
+        }
+    }
+
+    sf_close (infile);
+
+    return out;
 }

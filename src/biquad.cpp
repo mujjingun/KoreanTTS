@@ -57,6 +57,7 @@ void Biquad::recalculateCoeffs()
 
 	fpoint coeff = 0;
 	switch (type) {
+    default:
 	case LPF:
 		b0 = (1 - cosw0) / 2;
 		b1 = 1 - cosw0;

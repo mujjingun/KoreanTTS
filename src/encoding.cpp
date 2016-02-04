@@ -39,7 +39,7 @@ int console_input ( std::wstring & str )
 std::vector<int> decompose( std::wstring const & str )
 {
     std::vector<int> out;
-    for(size_t i = 0; i < str.length(); i++)
+    for(unsigned i = 0; i < str.length(); i++)
     {
         int code = str[i] - FIRST_HANGUL_UNICODE;
 

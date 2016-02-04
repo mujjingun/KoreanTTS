@@ -3,6 +3,8 @@
 
 #include <portaudio.h>
 #include <sndfile.h>
+
+#include <string>
 #include "main.h"
 
 class SoundIO
@@ -25,9 +27,9 @@ public:
     int init_sound(int channels);
     int play_sound(std::vector<float> data);
     int end_sound();
-    static int16_t normalize(const fpoint& x);
 
 };
 
+std::vector<fpoint> get_samples_from_file(std::string filename);
 
 #endif // SOUNDIO_H_INCLUDED
