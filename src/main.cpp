@@ -8,21 +8,37 @@
 #include "encoding.h"
 #include "hangul.h"
 
-int main(int argc, char *argv[])
+#include "sdft.h"
+#include "cepstrum.h"
+void test()
 {
+    SDFT sdft;
+    auto v = get_samples_from_file("dallang");
+    std::cout<< v.size() << std::endl;
+    for(unsigned i = 0; i < v.size(); i++)
+    {
+        sdft.sdft(v[i]);
+        if(i == 10000)
+        {
+            auto env = spectral_envelope(sdft.bins);
+            for(auto a : env) std::cout << a << ", ";
+        }
+    }
+
+}
+
+int main()
+{
+    test();
+
     clock_t start, finish;
     std::vector<float> out;
     SoundIO soundio;
     Synthesizer synth;
 
-    bool use_sound = false;
-    std::cout<<"Use sound I/O? ";
-    fflush(stdin);
-    if(getchar() == 'y')
-    {
-        use_sound = true;
-        soundio.init_sound(1);
-    }
+    std::cout.sync_with_stdio(false);
+
+    soundio.init_sound(1);
 
     while(1)
     {
@@ -81,17 +97,11 @@ int main(int argc, char *argv[])
         std::cout << ft_rate / Fs << " times faster than real-time" << std::endl;
         std::cout << "out buffer size: " << out.size() * 16 << " bytes\n" << std::endl;
 
-        if(use_sound)
-        {
-            std::cout << "playing sound.." << std::endl;
-            soundio.play_sound(out);
-        }
+        std::cout << "playing sound.." << std::endl;
+        soundio.play_sound(out);
     }
 
-    if(use_sound)
-    {
-        soundio.end_sound();
-    }
+    soundio.end_sound();
 
     return 0;
 }

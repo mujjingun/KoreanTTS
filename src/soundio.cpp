@@ -87,11 +87,11 @@ int SoundIO::end_sound()
     return 0;
 }
 
-signal_t get_samples_from_file(std::string filename)
+std::vector<fpoint> get_samples_from_file(std::string filename)
 {
     const int BUFFER_LEN = 1024;
     static float data[BUFFER_LEN];
-    signal_t out;
+    std::vector<fpoint> out;
 
     SNDFILE *infile;
     SF_INFO sfinfo;

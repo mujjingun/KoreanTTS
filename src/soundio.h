@@ -34,6 +34,6 @@ public:
 
 };
 
-signal_t get_samples_from_file(std::string filename);
+std::vector<fpoint> get_samples_from_file(std::string filename);
 
 #endif // SOUNDIO_H_INCLUDED

@@ -3,11 +3,12 @@
 
 #include <cstdint>
 #include <vector>
+#include <complex>
 
 typedef double fpoint;
-typedef std::vector<fpoint> signal_t;
+typedef std::complex<fpoint> complex;
 
 // sampling rate
-#define Fs fpoint(16000)
+#define Fs fpoint(22050)
 
 #endif // MAIN_H_INCLUDED

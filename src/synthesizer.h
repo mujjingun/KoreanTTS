@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "main.h"
+#include "sdft.h"
 
 class Synthesizer
 {
@@ -23,7 +24,9 @@ protected:
 
 private:
     std::vector<int> phonemes;
-    signal_t samples;
+    std::vector<fpoint> samples;
+
+    SDFT sdft;
 
     int sample_idx;
     int phoneme_idx;

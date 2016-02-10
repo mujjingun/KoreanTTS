@@ -8,11 +8,17 @@
 #include "soundio.h"
 #include "utils.h"
 
-Synthesizer::Synthesizer()
-: phonemes(), samples(),
-sample_idx(0), phoneme_idx(0), finished(false),
-last_phoneme_sec(0), last_phoneme_sample_idx(0),
-progress_sec(0), duration(0)
+Synthesizer::Synthesizer():
+    phonemes(),
+    samples(),
+    sdft(),
+    sample_idx(0),
+    phoneme_idx(0),
+    finished(false),
+    last_phoneme_sec(0),
+    last_phoneme_sample_idx(0),
+    progress_sec(0),
+    duration(0)
 {
 }
 
@@ -79,6 +85,8 @@ fpoint Synthesizer::generate_sample()
     }
 
     fpoint result = samples[sample_idx - last_phoneme_sample_idx];
+
+    sdft.sdft(result);
 
     return clamp(-1, 1, result);
 }
