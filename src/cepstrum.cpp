@@ -1,19 +1,15 @@
 #include "cepstrum.h"
 #include <iostream>
-#include <valarray>
 
-#define M_PI 3.1415926535897932384626
+#define M_PI 3.14159265358979323846264338328L
 
-void fft(std::valarray<complex> &x);
-void ifft(std::valarray<complex>& x);
-
-std::vector<fpoint> spectral_envelope(std::vector<complex> const& dft)
+std::vector<fpoint> spectral_envelope(std::valarray<complex> const& dft)
 {
     std::valarray<complex> out(dft.size());
 
     for(unsigned i = 0; i < dft.size(); i++)
     {
-        fpoint f = abs(dft[i]);
+        fpoint f = std::max(abs(dft[i]), 0.0000001);
         out[i] = log(f);
     }
 
@@ -49,7 +45,11 @@ void fft(std::valarray<complex> &x)
 {
     // DFT
     unsigned int N = x.size(), k = N, n;
-    double thetaT = 3.14159265358979323846264338328L / N;
+
+    // if not power of two, do nothing
+    if(N & (N - 1)) return;
+
+    double thetaT = M_PI / N;
     complex phiT = complex(cos(thetaT), sin(thetaT)), T;
     while (k > 1)
     {

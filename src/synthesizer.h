@@ -2,6 +2,7 @@
 #define SYNTHESIZER_H
 
 #include <vector>
+#include <valarray>
 
 #include "main.h"
 #include "sdft.h"
@@ -13,7 +14,7 @@ public:
     virtual ~Synthesizer() {};
 
     void start(std::vector<int> const& phonemes);
-    fpoint generate_sample();
+    std::vector<float> generate_frame();
     bool has_ended();
 
 protected:
@@ -25,8 +26,9 @@ protected:
 private:
     std::vector<int> phonemes;
     std::vector<fpoint> samples;
-
-    SDFT sdft;
+    std::valarray<complex> ova;
+    std::valarray<complex> sig;
+    std::valarray<complex> window;
 
     int sample_idx;
     int phoneme_idx;

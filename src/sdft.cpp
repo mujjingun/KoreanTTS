@@ -7,12 +7,13 @@ SDFT::SDFT():
     idx(0),
     oldest_data(0),
     newest_data(0),
-    bins(N, 0)
+    spec(N, 0)
 {
     // clear data
     for (int i = 0; i < N; ++i)
     {
         in[i] = 0;
+        bins[i] = 0;
     }
 
     //initilaize coefficients
@@ -36,7 +37,7 @@ void SDFT::sdft(fpoint d)
     complex delta = newest_data - oldest_data;
     for (int i = 0; i < N; ++i)
     {
-        bins[i] = bins[i] * coeffs[i] + delta;
+        spec[i] = bins[i] = spec[i] * coeffs[i] + delta;
     }
     if (++idx == N) idx = 0; // bump global index
 }
@@ -55,7 +56,7 @@ void SDFT::mirror()
 {
     for(int i = 0; i < N / 2; ++i)
     {
-        bins[N - i] = std::conj(bins[i]);
+        spec[N - i] = std::conj(spec[i]);
     }
 }
 
@@ -65,11 +66,11 @@ complex SDFT::sum_frame()
     complex sum = 0;
     for (int i = 0; i < N; i += 2)
     {
-        sum += bins[i];
+        sum += spec[i];
     }
     for (int i = 1; i < N; i += 2)
     {
-        sum -= bins[i];
+        sum -= spec[i];
     }
     return sum / fpoint(N);
 }

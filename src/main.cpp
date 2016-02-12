@@ -8,30 +8,10 @@
 #include "encoding.h"
 #include "hangul.h"
 
-#include "sdft.h"
-#include "cepstrum.h"
-void test()
-{
-    SDFT sdft;
-    auto v = get_samples_from_file("dallang");
-    std::cout<< v.size() << std::endl;
-    for(unsigned i = 0; i < v.size(); i++)
-    {
-        sdft.sdft(v[i]);
-        if(i == 10000)
-        {
-            auto env = spectral_envelope(sdft.bins);
-            for(auto a : env) std::cout << a << ", ";
-        }
-    }
-
-}
-
 int main()
 {
-    test();
+    //test();
 
-    clock_t start, finish;
     std::vector<float> out;
     SoundIO soundio;
     Synthesizer synth;
@@ -78,18 +58,17 @@ int main()
 
         if(in.size() <= 2) break;
 
-        start = clock();
+        clock_t start = clock();
 
         synth.start(in);
 
         while(!synth.has_ended())
         {
-            fpoint generated = synth.generate_sample();
-            out.push_back((float)generated);
-            //out.push_back((float)generated);
+            auto generated = synth.generate_frame();
+            out.insert(out.end(), generated.begin(), generated.end());
         }
 
-        finish = clock();
+        clock_t finish = clock();
 
         fpoint ft_rate = out.size() / ((finish - start) / (fpoint)CLOCKS_PER_SEC);
         std::cout << std::endl;

@@ -33,9 +33,11 @@ private:
 
 public:
 
+    std::vector<complex> spec;
+
     // frequency bins of input signal after ft
     // Size increased by one because the optimized sdft code writes data to freqs[N]
-    std::vector<complex> bins;
+    complex bins[N];
 
     SDFT();
     void sdft(fpoint d);

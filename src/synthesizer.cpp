@@ -7,11 +7,18 @@
 #include "synthesizer.h"
 #include "soundio.h"
 #include "utils.h"
+#include "cepstrum.h"
+#define M_PI 3.14159265358979323846264338328L
+
+const int L = 256;
+const int R = L / 4;
 
 Synthesizer::Synthesizer():
     phonemes(),
     samples(),
-    sdft(),
+    ova(L),
+    sig(L),
+    window(L),
     sample_idx(0),
     phoneme_idx(0),
     finished(false),
@@ -20,6 +27,12 @@ Synthesizer::Synthesizer():
     progress_sec(0),
     duration(0)
 {
+    for(int i = 0; i < L; i++)
+    {
+        window[i] = .5*(1 - cos(2 * M_PI * i / (L+1)));
+    }
+
+    //for(auto a : window) std::cout<<std::fixed<<a.real()<<", ";
 }
 
 void Synthesizer::start(std::vector<int> const& aphonemes)
@@ -38,7 +51,7 @@ void Synthesizer::phoneme_transition()
     int ch = phonemes[phoneme_idx];
     int next = phonemes[phoneme_idx + 1];
 
-    printf("generating %d : %d..\n", phoneme_idx, ch);
+    //printf("generating %d : %d..\n", phoneme_idx, ch);
 
     std::stringstream filename;
     filename << std::setfill('0') << std::setw(2) << ch << std::setw(2) << next;
@@ -74,21 +87,65 @@ int Synthesizer::update_params()
     return -1;
 }
 
-fpoint Synthesizer::generate_sample()
+std::vector<float> Synthesizer::generate_frame()
 {
-    sample_idx++;
+    // shift the signal left to get space for the new signal
+    sig = sig.shift(R);
 
-    if(update_params() >= 0 || finished)
+    for(int i = 0; i < R; i++)
     {
-        finished = true;
-        return 0;
+        sample_idx++;
+
+        if(update_params() >= 0 || finished)
+        {
+            finished = true;
+            return std::vector<float>();
+        }
+
+        fpoint in = samples[sample_idx - last_phoneme_sample_idx];
+
+        // append the signal at the end
+        sig[L - R + i] = in;
     }
 
-    fpoint result = samples[sample_idx - last_phoneme_sample_idx];
+    std::valarray<complex> seg = sig * window, tmp(L);
 
-    sdft.sdft(result);
+    fft(seg);
 
-    return clamp(-1, 1, result);
+    auto env = spectral_envelope(seg);
+
+    // pitch shifting
+    tmp = seg;
+    for(unsigned i = 0; i < L / 2; i++)
+    {
+        unsigned shift = unsigned(i * 1);
+        if(shift < L / 2)
+        {
+            seg[i] = tmp[shift];
+        }
+        else
+        {
+            seg[i] = 0;
+        }
+        seg[L - i - 1] = conj(seg[i]);
+    }
+
+    //std::cout<<"{";
+    //for(auto a : env) std::cout<<a<<", ";
+    //std::cout<<"},"<<std::endl;
+
+    ifft(seg);
+
+    ova = ova.shift(R) + seg * window;
+
+    std::vector<float> out;
+
+    for(unsigned i = 0; i < R; i++)
+    {
+        out.push_back((float)clamp(-1, 1, ova[i].real()));
+    }
+
+    return out;
 }
 
 bool Synthesizer::has_ended()
