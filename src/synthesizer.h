@@ -29,6 +29,8 @@ private:
     std::valarray<complex> ova;
     std::valarray<complex> sig;
     std::valarray<complex> window;
+    std::valarray<fpoint> last_phase;
+    std::valarray<fpoint> sum_phase;
 
     int sample_idx;
     int phoneme_idx;

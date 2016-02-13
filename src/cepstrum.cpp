@@ -9,8 +9,8 @@ std::vector<fpoint> spectral_envelope(std::valarray<complex> const& dft)
 
     for(unsigned i = 0; i < dft.size(); i++)
     {
-        fpoint f = std::max(abs(dft[i]), 0.0000001);
-        out[i] = log(f);
+        fpoint f = std::max(abs(dft[i]), 0.000001);
+        out[i] = log10(f);
     }
 
     ifft(out);
@@ -21,9 +21,16 @@ std::vector<fpoint> spectral_envelope(std::valarray<complex> const& dft)
     // lowpass
     out[nc] *= 0.5;
     out[out.size() - nc] *= 0.5;
-    for(unsigned i = nc + 1; i < out.size() - nc - 1; i++)
+    for(unsigned i = nc + 1; i < out.size(); i++)
     {
-        out[i] = 0;
+        if(i > nc && i < out.size() - nc - 1)
+        {
+            out[i] = 0;
+        }
+        else
+        {
+            out[i] = out[i].real();
+        }
     }
 
     fft(out);
